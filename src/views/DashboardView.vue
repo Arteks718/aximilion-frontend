@@ -1,37 +1,90 @@
 <template>
-  <div class="py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Stitch By Google Dashboard</h1>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Welcome Section -->
+    <div class="mb-12">
+      <h1 class="text-4xl font-extrabold text-brand-dark mb-2 font-headline">Welcome back, {{ userName }}</h1>
+      <p class="text-brand-gray">Here is a summary of your impact and activities.</p>
+    </div>
 
-    <!-- Stats Section -->
-    <div v-if="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-      <div class="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-500">
-        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Active Campaigns</h3>
-        <p class="mt-2 text-3xl font-extrabold text-gray-900">{{ stats.totalActiveCampaigns }}</p>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_4px_24px_rgba(22,28,34,0.04)] flex flex-col justify-center min-h-[140px]">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-10 h-10 rounded-full bg-brand-lightGreen flex items-center justify-center">
+            <i class="fa-solid fa-hand-holding-dollar text-[#006C49]"></i>
+          </div>
+          <p class="text-sm font-medium text-brand-gray">Total Donated</p>
+        </div>
+        <p class="text-3xl font-bold text-brand-dark font-headline">$1,250</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
-        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Collected</h3>
-        <p class="mt-2 text-3xl font-extrabold text-gray-900">${{ stats.totalAmountCollected }}</p>
+
+      <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_4px_24px_rgba(22,28,34,0.04)] flex flex-col justify-center min-h-[140px]">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
+            <i class="fa-solid fa-heart text-brand-gray"></i>
+          </div>
+          <p class="text-sm font-medium text-brand-gray">Campaigns Supported</p>
+        </div>
+        <p class="text-3xl font-bold text-brand-dark font-headline">12</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
-        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Registered Users</h3>
-        <p class="mt-2 text-3xl font-extrabold text-gray-900">{{ stats.totalUsers }}</p>
+
+      <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_4px_24px_rgba(22,28,34,0.04)] flex flex-col justify-center min-h-[140px]">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
+            <i class="fa-solid fa-medal text-brand-gray"></i>
+          </div>
+          <p class="text-sm font-medium text-brand-gray">Badges Earned</p>
+        </div>
+        <p class="text-3xl font-bold text-brand-dark font-headline">4</p>
       </div>
     </div>
-    <div v-else class="text-gray-500 mb-12">Loading stats...</div>
 
-    <!-- Badges Section -->
+    <!-- Badges Grid -->
     <div>
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">My Badges</h2>
-      <div v-if="badges.length === 0" class="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
-        You haven't earned any badges yet. Start donating to unlock milestones!
-      </div>
-      <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <div v-for="badge in badges" :key="badge.id" class="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center text-center transition-transform duration-300 hover:scale-105">
-          <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+      <h2 class="text-2xl font-bold text-brand-dark mb-6 font-headline">Your Badges</h2>
+      <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-[0_4px_24px_rgba(22,28,34,0.04)]">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+          
+          <div class="flex flex-col items-center text-center">
+            <div class="w-20 h-20 bg-[#006C49]/10 rounded-full flex items-center justify-center mb-3">
+              <i class="fa-solid fa-seedling text-3xl text-[#006C49]"></i>
+            </div>
+            <p class="font-bold text-brand-dark text-sm">First Seed</p>
+            <p class="text-xs text-brand-gray mt-1">Donated to 1 campaign</p>
           </div>
-          <h4 class="font-bold text-gray-900">{{ badge.name }}</h4>
-          <p class="text-xs text-gray-500 mt-1">{{ badge.requiredDonationsCount }} Donations</p>
+
+          <div class="flex flex-col items-center text-center">
+            <div class="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mb-3">
+              <i class="fa-solid fa-water text-3xl text-blue-500"></i>
+            </div>
+            <p class="font-bold text-brand-dark text-sm">Clean Water</p>
+            <p class="text-xs text-brand-gray mt-1">Supported a medical cause</p>
+          </div>
+
+          <div class="flex flex-col items-center text-center">
+            <div class="w-20 h-20 bg-purple-500/10 rounded-full flex items-center justify-center mb-3">
+              <i class="fa-solid fa-book-open text-3xl text-purple-500"></i>
+            </div>
+            <p class="font-bold text-brand-dark text-sm">Educator</p>
+            <p class="text-xs text-brand-gray mt-1">Supported education</p>
+          </div>
+
+          <div class="flex flex-col items-center text-center">
+            <div class="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mb-3">
+              <i class="fa-solid fa-star text-3xl text-yellow-600"></i>
+            </div>
+            <p class="font-bold text-brand-dark text-sm">Rising Star</p>
+            <p class="text-xs text-brand-gray mt-1">Over $1,000 donated</p>
+          </div>
+
+          <div class="flex flex-col items-center text-center opacity-40 grayscale">
+            <div class="w-20 h-20 bg-surface-container-high rounded-full flex items-center justify-center mb-3">
+              <i class="fa-solid fa-shield-heart text-3xl text-brand-gray"></i>
+            </div>
+            <p class="font-bold text-brand-dark text-sm">Guardian</p>
+            <p class="text-xs text-brand-gray mt-1">Locked</p>
+          </div>
+
         </div>
       </div>
     </div>
@@ -39,26 +92,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import api from '../api/axios';
+import { computed } from 'vue';
+import { useAuthStore } from '../stores/auth';
 
-const stats = ref<any>(null);
-const badges = ref<any[]>([]);
+const authStore = useAuthStore();
 
-const fetchDashboardData = async () => {
-  try {
-    const [statsRes, badgesRes] = await Promise.all([
-      api.get('/stats'),
-      api.get('/badges/my')
-    ]);
-    stats.value = statsRes.data;
-    badges.value = badgesRes.data;
-  } catch (error) {
-    console.error('Failed to fetch dashboard data', error);
-  }
-};
-
-onMounted(() => {
-  fetchDashboardData();
+const userName = computed(() => {
+  return authStore.user?.email?.split('@')[0] || 'User';
 });
 </script>
