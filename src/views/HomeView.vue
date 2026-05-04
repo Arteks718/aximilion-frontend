@@ -12,12 +12,9 @@
             Track every dollar from your wallet to the final beneficiary. Experience the next generation of philanthropic accountability.
           </p>
           <div class="flex flex-wrap gap-4">
-            <router-link to="/dashboard" class="bg-[#006C49] text-surface-container-lowest px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-[#005236] transition-colors shadow-sm">
+            <router-link :to="{ name: 'campaigns' }" class="bg-[#006C49] text-surface-container-lowest px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-[#005236] transition-colors shadow-sm">
               Donate Now <i class="pi pi-arrow-right text-white text-sm"></i>
             </router-link>
-            <a class="bg-surface-container-low text-brand-dark px-6 py-3 rounded-full font-medium hover:bg-surface-container-highest transition-colors" href="#">
-              View Reports
-            </a>
           </div>
         </div>
         <!-- Hero Stats -->
@@ -47,21 +44,21 @@
 
     <!-- Categories -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 overflow-x-auto hide-scrollbar bg-surface-container-low py-4 rounded-2xl mx-4 sm:mx-6 lg:mx-auto">
-      <div class="flex gap-4 min-w-max">
-        <button class="flex items-center gap-3 px-6 py-3 rounded-xl bg-brand-lightGreen text-brand-green font-semibold shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all hover:-translate-y-0.5">
-          <i class="fa-solid fa-globe text-lg"></i> All
-        </button>
-        <button class="flex items-center gap-3 px-6 py-3 rounded-xl bg-surface-container-lowest text-brand-dark font-medium shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all hover:-translate-y-0.5">
-          <i class="fa-solid fa-shield-halved text-brand-gray text-lg"></i> Military
-        </button>
-        <button class="flex items-center gap-3 px-6 py-3 rounded-xl bg-surface-container-lowest text-brand-dark font-medium shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all hover:-translate-y-0.5">
-          <i class="fa-solid fa-truck-medical text-brand-gray text-lg"></i> Medical
-        </button>
-        <button class="flex items-center gap-3 px-6 py-3 rounded-xl bg-surface-container-lowest text-brand-dark font-medium shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all hover:-translate-y-0.5">
-          <i class="fa-solid fa-paw text-brand-gray text-lg"></i> Animals
-        </button>
-        <button class="flex items-center gap-3 px-6 py-3 rounded-xl bg-surface-container-lowest text-brand-dark font-medium shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all hover:-translate-y-0.5">
-          <i class="fa-solid fa-hammer text-brand-gray text-lg"></i> Rebuild
+      <Skeleton v-if="categories.length === 1" height="4rem" class="mx-auto" />
+      <div v-else-if="categories.length > 1" class="flex gap-4 min-w-max">
+        <button 
+          v-for="category in categories" 
+          :key="category.id"
+          @click="handleCategoryClick(category.id)"
+          :class="[
+            'flex items-center gap-3 px-6 py-3 rounded-xl transition-all hover:-translate-y-0.5',
+            selectedCategory === category.id 
+              ? 'bg-brand-lightGreen text-brand-green font-semibold shadow-md border border-brand-green/30' 
+              : 'bg-surface-container-lowest text-brand-dark font-medium shadow-sm hover:shadow-md'
+          ]"
+        >
+          <i :class="[category.iconPrefix, selectedCategory === category.id ? 'text-brand-green' : 'text-brand-gray', 'text-lg pi']"></i> 
+          {{ category.name }}
         </button>
       </div>
     </section>
@@ -73,50 +70,75 @@
           <h2 class="text-2xl font-bold text-brand-dark mb-1 font-headline">Verified Campaigns</h2>
           <p class="text-brand-gray text-sm">Direct impact backed by rigorous documentation.</p>
         </div>
-        <router-link to="/explore" class="text-sm font-medium text-brand-dark hover:text-brand-green flex items-center gap-1">
+        <router-link :to="{ name: 'campaigns' }" class="text-sm font-medium text-brand-dark hover:text-brand-green flex items-center gap-1">
           View All <i class="pi pi-arrow-right text-xs"></i>
         </router-link>
       </div>
 
       <div class="space-y-6">
-        <article v-for="(campaign, index) in verifiedCampaigns" :key="index" class="bg-surface-container-lowest rounded-2xl p-4 flex flex-col md:flex-row gap-6 shadow-[0_4px_24px_rgba(22,28,34,0.04)] hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-shadow">
+        <!-- Skeleton Loading -->
+        <template v-if="isLoading">
+          <div v-for="n in 3" :key="'v-skel-' + n" class="bg-surface-container-lowest rounded-2xl p-4 flex flex-col md:flex-row gap-6 shadow-sm">
+            <Skeleton width="100%" height="12rem" class="md:w-1/3 !rounded-xl" />
+            <div class="flex-1 flex flex-col justify-between py-2">
+              <div>
+                <Skeleton width="40%" height="1rem" class="mb-4" />
+                <Skeleton width="80%" height="2rem" class="mb-4" />
+                <Skeleton width="100%" height="3rem" />
+              </div>
+              <div class="mt-8">
+                <Skeleton width="100%" height="0.5rem" class="rounded-full" />
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Real Cards -->
+        <article 
+          v-else-if="verifiedCampaigns.length > 0"
+          v-for="(campaign, index) in verifiedCampaigns" 
+          :key="campaign.id" 
+          @click="navigateToDetail(campaign.id)"
+          class="bg-surface-container-lowest rounded-2xl p-4 flex flex-col md:flex-row gap-6 shadow-[0_4px_24px_rgba(22,28,34,0.04)] hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-all cursor-pointer"
+        >
           <div class="w-full md:w-1/3 aspect-[4/3] md:aspect-auto md:h-48 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container-low">
-            <img :alt="campaign.title" class="w-full h-full object-cover" :src="campaign.image || 'https://via.placeholder.com/400x300?text=Campaign+Image'" />
+            <img :alt="campaign.title" class="w-full h-full object-cover transition-transform group-hover:scale-105" :src="getCoverImage(campaign) || 'https://via.placeholder.com/400x300?text=Campaign+Image'" />
           </div>
           <div class="flex-1 flex flex-col justify-between">
             <div>
               <div class="flex items-center gap-2 mb-2">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-brand-lightGreen text-brand-green">
-                  <i class="fa-solid fa-check-circle text-[10px]"></i> VERIFIED DOCUMENTS
+                  <i class="pi pi-verified text-[10px]"></i> VERIFIED DOCUMENTS
                 </span>
-                <span class="text-xs font-medium text-brand-gray uppercase tracking-wider">{{ campaign.category || 'Medical' }}</span>
+                <span class="text-xs font-medium text-brand-gray uppercase tracking-wider">{{ getCategoryName(campaign.categoryId) }}</span>
               </div>
-              <h3 class="text-xl font-bold text-brand-dark mb-2 font-headline">{{ campaign.title }}</h3>
+              <h3 class="text-xl font-bold text-brand-dark mb-2 font-headline group-hover:text-brand-green">{{ campaign.title }}</h3>
               <p class="text-sm text-brand-gray line-clamp-2 mb-4">
                 {{ campaign.description }}
               </p>
             </div>
             <div>
               <div class="flex justify-between text-sm font-medium mb-1.5">
-                <span class="text-brand-dark">${{ campaign.collectedInternal || 0 }} raised</span>
-                <span class="text-brand-dark">{{ Math.round(((campaign.collectedInternal || 0) / campaign.goalAmount) * 100) || 0 }}%</span>
+                <span class="text-brand-dark">{{ currencySymbol(campaign) }}{{ formatAmount(campaign.collectedInternal || 0) }} raised</span>
+                <span class="text-brand-dark">{{ progressPercent(campaign) }}%</span>
               </div>
-              <div class="w-full bg-surface-container-low rounded-full h-2 mb-3">
-                <div class="bg-brand-green h-2 rounded-full" :style="{ width: Math.min(100, ((campaign.collectedInternal || 0) / campaign.goalAmount) * 100 || 0) + '%' }"></div>
-              </div>
+              <ProgressBar :value="progressPercent(campaign)" :showValue="false" class="h-2 mb-3" />
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4 text-xs text-brand-gray font-medium">
-                  <span>Target: ${{ campaign.goalAmount }}</span>
-                  <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> {{ campaign.daysLeft || 14 }} Days Left</span>
-                  <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> {{ campaign.donorsCount || 1140 }} Donors</span>
+                  <span>Target: {{ currencySymbol(campaign) }}{{ formatAmount(campaign.goalAmount) }}</span>
+                  <span class="flex items-center gap-1"><i class="pi pi-clock text-[10px]"></i> {{ getDaysLeft(campaign) }}</span>
+                  <span class="flex items-center gap-1"><i class="pi pi-users text-[10px]"></i> {{ campaign.donorsCount || 0 }} Donors</span>
                 </div>
                 <button class="bg-[#006C49] text-surface-container-lowest px-6 py-2 rounded-full text-sm font-medium hover:bg-[#005236] transition-colors flex items-center gap-2">
-                  Donate <i class="fa-solid fa-arrow-right text-white text-sm"></i>
+                  Donate <i class="pi pi-arrow-right text-white text-sm"></i>
                 </button>
               </div>
             </div>
           </div>
         </article>
+
+        <!-- No verified campaigns placeholder -->
+        <div v-else class="w-full h-[12rem] col-span-2 flex justify-center items-center bg-surface-container-lowest rounded-2xl p-4 shadow-[0_4px_24px_rgba(22,28,34,0.04)]">No verified campaigns</div>
       </div>
     </section>
 
@@ -127,35 +149,56 @@
         <div class="lg:col-span-2">
           <div class="flex justify-between items-end mb-6">
             <h2 class="text-2xl font-bold text-brand-dark font-headline">Trending Campaigns</h2>
-            <a class="text-sm font-medium text-brand-dark hover:text-brand-green flex items-center gap-1" href="#">
-              View All <i class="fa-solid fa-arrow-right text-xs"></i>
-            </a>
+            <router-link :to="{ name: 'campaigns' }" class="text-sm font-medium text-brand-dark hover:text-brand-green flex items-center gap-1">
+              View All <i class="pi pi-arrow-right text-xs"></i>
+            </router-link>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <article v-for="(campaign, index) in trendingCampaigns" :key="index" class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(22,28,34,0.04)] hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-shadow flex flex-col">
-              <div class="aspect-[4/3] w-full relative bg-surface-container-low">
-                <img :alt="campaign.title" class="w-full h-full object-cover" :src="campaign.image || 'https://via.placeholder.com/400x300?text=Trending+Campaign'" />
+            <!-- Skeleton Loading -->
+            <template v-if="isLoading">
+              <div v-for="n in 2" :key="'t-skel-' + n" class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                <Skeleton width="100%" height="12rem" />
+                <div class="p-5 flex-1 space-y-4">
+                  <Skeleton width="40%" height="0.75rem" />
+                  <Skeleton width="90%" height="1.5rem" />
+                  <Skeleton width="100%" height="3rem" />
+                  <Skeleton width="100%" height="0.5rem" class="mt-4" />
+                </div>
+              </div>
+            </template>
+
+            <!-- Real Cards -->
+            <article 
+              v-else-if="trendingCampaigns.length > 0"
+              v-for="campaign in trendingCampaigns" 
+              :key="campaign.id" 
+              @click="navigateToDetail(campaign.id)"
+              class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(22,28,34,0.04)] hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-all flex flex-col cursor-pointer group"
+            >
+              <div class="aspect-[4/3] w-full relative bg-surface-container-low overflow-hidden">
+                <img :alt="campaign.title" class="w-full h-full object-cover transition-transform group-hover:scale-105" :src="getCoverImage(campaign) || 'https://via.placeholder.com/400x300?text=Trending+Campaign'" />
               </div>
               <div class="p-5 flex-1 flex flex-col">
-                <span class="text-xs font-bold text-brand-gray uppercase tracking-wider mb-1">{{ campaign.category || 'Medical' }}</span>
-                <h3 class="text-lg font-bold text-brand-dark mb-2 line-clamp-1 font-headline">{{ campaign.title }}</h3>
+                <span class="text-xs font-bold text-brand-gray uppercase tracking-wider mb-1">{{ getCategoryName(campaign.categoryId) }}</span>
+                <h3 class="text-lg font-bold text-brand-dark mb-2 line-clamp-1 font-headline group-hover:text-brand-green">{{ campaign.title }}</h3>
                 <p class="text-sm text-brand-gray line-clamp-2 mb-4 flex-1">
                   {{ campaign.description }}
                 </p>
                 <div class="mt-auto">
                   <div class="flex justify-between text-xs font-semibold mb-1">
-                    <span class="text-brand-green">{{ Math.round(((campaign.collectedInternal || 0) / campaign.goalAmount) * 100) || 0 }}%</span>
+                    <span class="text-brand-green">{{ progressPercent(campaign) }}%</span>
                   </div>
-                  <div class="w-full bg-surface-container-low rounded-full h-1.5 mb-3">
-                    <div class="bg-brand-green h-1.5 rounded-full" :style="{ width: Math.min(100, ((campaign.collectedInternal || 0) / campaign.goalAmount) * 100 || 0) + '%' }"></div>
-                  </div>
+                  <ProgressBar :value="progressPercent(campaign)" :showValue="false" class="h-1.5 mb-3" />
                   <div class="flex items-center gap-4 text-xs text-brand-gray font-medium">
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-bullseye"></i> ${{ campaign.collectedInternal || 0 }} raised</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-users"></i> {{ campaign.donorsCount || 1130 }} Donors</span>
+                    <span class="flex items-center gap-1"><i class="pi pi-target text-[10px]"></i> {{ currencySymbol(campaign) }}{{ formatAmount(campaign.collectedInternal || 0) }} raised</span>
+                    <span class="flex items-center gap-1"><i class="pi pi-users text-[10px]"></i> {{ campaign.donorsCount || 0 }} Donors</span>
                   </div>
                 </div>
               </div>
             </article>
+            
+            <!-- No trending campaigns placeholder -->
+            <div v-else class="w-full h-[12rem] col-span-2 flex justify-center items-center bg-surface-container-lowest rounded-2xl p-4 shadow-[0_4px_24px_rgba(22,28,34,0.04)]">No trending campaigns</div>
           </div>
         </div>
 
@@ -167,7 +210,7 @@
               <li class="flex items-center justify-between" v-for="n in 5" :key="n">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-brand-lightGreen flex items-center justify-center text-brand-green">
-                    <i class="fa-regular fa-user"></i>
+                    <i class="pi pi-user"></i>
                   </div>
                   <div>
                     <p class="text-sm font-semibold text-brand-dark">Donor Name</p>
@@ -195,9 +238,9 @@
             <div class="relative mb-6">
               <div class="absolute -top-3 -left-3 w-6 h-6 bg-surface-container-highest rounded-full flex items-center justify-center text-xs font-bold text-brand-gray z-10">1</div>
               <div class="w-20 h-20 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-sm">
-                <i class="fa-regular fa-file-lines text-3xl text-brand-green"></i>
+                <i class="pi pi-file !text-2xl text-brand-green"></i>
                 <div class="absolute bottom-0 right-0 w-6 h-6 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-sm">
-                  <i class="fa-solid fa-lock text-xs text-brand-green"></i>
+                  <i class="pi pi-lock !text-xs text-brand-green"></i>
                 </div>
               </div>
             </div>
@@ -211,7 +254,7 @@
             <div class="relative mb-6 bg-surface-container-low">
               <div class="absolute -top-3 -left-3 w-6 h-6 bg-surface-container-highest rounded-full flex items-center justify-center text-xs font-bold text-brand-gray z-10">2</div>
               <div class="w-20 h-20 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-sm relative z-10">
-                <i class="fa-solid fa-magnifying-glass text-3xl text-brand-green"></i>
+                <i class="pi pi-search !text-2xl text-brand-green"></i>
               </div>
             </div>
             <h3 class="text-lg font-bold text-brand-dark mb-2 font-headline">Verify Documents</h3>
@@ -256,7 +299,7 @@
               Thanks to your support, over 5,000 residents now have access to clean, safe drinking water.
             </p>
             <a class="text-brand-green font-semibold text-sm flex items-center gap-1 hover:text-emerald-700 transition-colors mt-auto" href="#">
-              Read More <i class="fa-solid fa-arrow-right text-xs"></i>
+              Read More <i class="pi pi-arrow-right text-xs"></i>
             </a>
           </div>
         </article>
@@ -273,7 +316,7 @@
               Dive into our detailed financial breakdown and impact metrics for the second quarter.
             </p>
             <a class="text-brand-green font-semibold text-sm flex items-center gap-1 hover:text-emerald-700 transition-colors mt-auto" href="#">
-              Read More <i class="fa-solid fa-arrow-right text-xs"></i>
+              Read More <i class="pi pi-arrow-right text-xs"></i>
             </a>
           </div>
         </article>
@@ -290,7 +333,7 @@
               Read about how a scholarship from the "Future Leaders" campaign empowered Maria to pursue her dreams.
             </p>
             <a class="text-brand-green font-semibold text-sm flex items-center gap-1 hover:text-emerald-700 transition-colors mt-auto" href="#">
-              Read More <i class="fa-solid fa-arrow-right text-xs"></i>
+              Read More <i class="pi pi-arrow-right text-xs"></i>
             </a>
           </div>
         </article>
@@ -301,71 +344,156 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
-import { useCampaignsStore } from '../stores/campaigns';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStatsStore } from '../stores/stats';
+import api from '../api/axios';
 
-const campaignsStore = useCampaignsStore();
+// PrimeVue components
+import ProgressBar from 'primevue/progressbar';
+import Skeleton from 'primevue/skeleton';
+
+const router = useRouter();
 const statsStore = useStatsStore();
 
-onMounted(() => {
-  campaignsStore.fetchCampaigns();
-  statsStore.fetchStats();
-});
+// --- Campaign types ---
+interface CampaignImage { url: string; type: string; }
+interface Campaign {
+  id: string;
+  title: string;
+  description: string;
+  categoryId: string;
+  goalAmount: string;
+  collectedInternal: string;
+  currency: string;
+  images: CampaignImage[] | null;
+  status: string;
+  endDate: string | null;
+  createdAt: string;
+  donorsCount?: number;
+}
+interface Category {
+  id: string;
+  name: string;
+  iconPrefix: string;
+}
 
-// Since we have limited data right now, slice the first two for Verified, next two for Trending.
-// In a real app we'd have a property 'isVerified' or 'isTrending'.
-const defaultCampaigns = [
-  {
-    title: 'Community Health Hub Construction',
-    description: 'Providing essential medical infrastructure to over 5,000 families in rural sectors with full blockchain-backed expense reporting.',
-    category: 'Medical',
-    goalAmount: 55000,
-    collectedInternal: 43000,
-    daysLeft: 14,
-    donorsCount: 1140,
-    image: 'https://lh3.googleusercontent.com/aida/ADBb0ujFLht6wMcAO_A3emIvMv1CB1VPVXkqyuVwHusF7nHIKfr967_ua2LFpF6VqKo5a6RJzRyooAI8pEcOYJ-Ac4c8TKHW-7aPs_qkqiEGSGrYO1EfIjT45wHTTLb0t0XsYu4I80b_kFnC8dKsmNP8xnWCH1qLQLcSkX_jjCxEvVtx24D9Rb3_t14gCJ8JZekHLAXh0wDQ1VZEEJHb-PipyGZ-mG3XJsMjmlFYWEhKCTGooS59giM_rHPRzAY'
-  },
-  {
-    title: 'Zero-Hunger Logistics Network',
-    description: 'Scaling our cold-chain storage to prevent food waste and feed metropolitan areas during economic shifts.',
-    category: 'Social',
-    goalAmount: 30000,
-    collectedInternal: 12200,
-    daysLeft: 8,
-    donorsCount: 642,
-    image: 'https://lh3.googleusercontent.com/aida/ADBb0uhVR52u9lBYawUIQaw2-mTbe6YfRSo7UrnnnizsFM0VTuXYtMwAYtLTfSSHFVOK5vrl82zoNj-bVQUvt_iIB2RSDUZGwGP3-u6yRCxXZ1bbcjsJzmVv0zeyWPQP3KGxTV198tcWLTfbsd0euvPoXV-Q8h1DP3scjDtKPwUDqdhMwWXP7e_bq6cVysK-vEBArgGZc0gZwFx_BF056KGVMkLp2dEAoOogtQgOirNnA7pwUMsQNYf_ubI6Mn8'
-  },
-  {
-    title: 'Advanced Medical Kits',
-    description: 'Providing provincial medical clinics with full block-chain expense reporting.',
-    category: 'Medical',
-    goalAmount: 71000,
-    collectedInternal: 55600,
-    daysLeft: 5,
-    donorsCount: 1130,
-    image: 'https://lh3.googleusercontent.com/aida/ADBb0ugoSvgmmv33hu5p4WxK_aKhUhQXlkJD0yxx51Pr7bgV9DZu5GSmikL3-YJuVS-gCi5ffj35qdKFiGKAbHU72csPtTozd4WqR3SyTSB36Z_OOzrlLcBTegEUtxtVwAKPb-DovH6UAPCBiUDXHYo6_IKg2CxkV9EbOhooFQY177Fba5wOv2Dh7NFaWpcphKSr6vF8Rdq1cMCp9Y1l-Ov6pJlOHmrupCITDg7NVmOEPVaJzZyeTJMB4S1xAA'
-  },
-  {
-    title: 'Emergency Sanctuary Expansion',
-    description: 'Scaling our cold-chain wildlife sanctuary and an used metropolitans.',
-    category: 'Social',
-    goalAmount: 15750,
-    collectedInternal: 6300,
-    daysLeft: 12,
-    donorsCount: 642,
-    image: 'https://lh3.googleusercontent.com/aida/ADBb0ujSfOylj1IX5HPMpLsN-y2WR_YSsLsWvQfYx11AUSJoMC3YmD8KcOoVM5_cxIz1faXWNx8nLUNmWrM_CMcnPXc6jY9eZRUrhAlL_J93gSdTPFdBi_aa7VkhepFbmyRG2qMNH4vRmQc41_yTRF7nU6dDRivqxPGAtaUy-rZz84x7nXxE6H8JCPi9_7nizYros9MEOGtXdyOAhMM8QNK_Oz3R3mU5B0u7lQLpMmqm6R5Zo8cDMEKrhsqBMAo'
+// --- State ---
+const campaigns = ref<Campaign[]>([]);
+const isLoading = ref(true);
+const selectedCategory = ref('All');
+
+const categories = ref<Category[]>([
+  { id: 'All', name: 'All', iconPrefix: 'pi pi-globe' }
+]);
+
+// --- Helpers ---
+const currencySymbolMap: Record<string, string> = { USD: '$', EUR: '€', UAH: '₴' };
+
+function getCoverImage(campaign: any): string {
+  if (campaign.image) return campaign.image; // fallback data
+  const imgs = campaign.images as CampaignImage[] | null;
+  const cover = imgs?.find((i) => i.type === 'cover');
+  return cover?.url || '';
+}
+
+function currencySymbol(c: any): string {
+  return currencySymbolMap[c?.currency] || '$';
+}
+
+function formatAmount(val: string | number): string {
+  const n = typeof val === 'string' ? parseFloat(val) : val;
+  if (!n || isNaN(n)) return '0';
+  return n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+}
+
+function progressPercent(c: any): number {
+  const collected = parseFloat(c.collectedInternal || '0');
+  const goal = parseFloat(c.goalAmount || '1');
+  return Math.min(100, Math.round((collected / goal) * 100));
+}
+
+function getDaysLeft(c: any): string {
+  if (c.daysLeft) return `${c.daysLeft} Days Left`;
+  if (!c.endDate) return 'Ongoing';
+  const end = new Date(c.endDate);
+  const now = new Date();
+  const diff = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  return diff > 0 ? `${diff} Days Left` : 'Ended';
+}
+
+function getCategoryName(categoryId: string): string {
+  const cat = categories.value.find(c => c.id === categoryId);
+  return cat ? cat.name : 'General';
+}
+
+// --- Fetch ---
+async function fetchCampaigns() {
+  isLoading.value = true;
+  try {
+    const params: any = {};
+    if (selectedCategory.value !== 'All') {
+      params.category = selectedCategory.value;
+    }
+    const { data: response } = await api.get('/campaigns', { params });
+    // Support both shapes: new { data, totalCount } and legacy array
+    campaigns.value = Array.isArray(response) ? response : response.data;
+  } catch (err) {
+    console.error('Failed to fetch campaigns:', err);
+  } finally {
+    isLoading.value = false;
   }
-];
+}
 
-const verifiedCampaigns = computed(() => {
-  const storeCamps = campaignsStore.campaigns.length > 0 ? campaignsStore.campaigns : defaultCampaigns;
-  return storeCamps.slice(0, 2);
+async function fetchCategories() {
+  try {
+    const { data: response } = await api.get('/categories');
+    categories.value.push(...(Array.isArray(response) ? response : response.data));
+  } catch (err) {
+    console.error('Failed to fetch categories:', err);
+  }
+}
+
+function handleCategoryClick(catId: string) {
+  if(selectedCategory.value === catId) return;
+  selectedCategory.value = catId;
+  fetchCampaigns();
+}
+
+function navigateToDetail(id: string) {
+  router.push({ name: 'campaign-detail', params: { id } });
+}
+
+onMounted(async () => {
+  statsStore.fetchStats();
+  await fetchCampaigns();
+  await fetchCategories();
 });
 
-const trendingCampaigns = computed(() => {
-  const storeCamps = campaignsStore.campaigns.length > 0 ? campaignsStore.campaigns : defaultCampaigns;
-  return storeCamps.slice(2, 4);
-});
-
+const allCampaigns = computed(() => campaigns.value.length > 0 ? campaigns.value : []);
+const verifiedCampaigns = computed(() => allCampaigns.value.slice(0, 3));
+const trendingCampaigns = computed(() => allCampaigns.value.slice(3, 5));
 </script>
+
+<style scoped>
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
+}
+</style>
