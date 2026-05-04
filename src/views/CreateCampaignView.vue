@@ -18,20 +18,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="space-y-2">
             <label class="text-xs uppercase tracking-widest font-bold text-brand-gray">Campaign Name</label>
-            <input
-              v-model="title"
-              type="text"
+            <input v-model="title" type="text"
               class="w-full bg-surface-container-lowest rounded-full px-6 py-4 text-brand-dark placeholder:text-brand-gray/50 focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary transition-colors"
-              placeholder="Enter a compelling title..."
-            />
+              placeholder="Enter a compelling title..." />
             <p v-if="errors.title" class="text-red-500 text-xs mt-1">{{ errors.title }}</p>
           </div>
           <div class="space-y-2">
             <label class="text-xs uppercase tracking-widest font-bold text-brand-gray">Category</label>
-            <select
-              v-model="categoryId"
-              class="w-full bg-surface-container-lowest rounded-full px-6 py-4 text-brand-dark appearance-none focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary transition-colors"
-            >
+            <select v-model="categoryId"
+              class="w-full bg-surface-container-lowest rounded-full px-6 py-4 text-brand-dark appearance-none focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary transition-colors">
               <option value="" disabled>Select a category...</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
             </select>
@@ -55,24 +50,19 @@
               <i class="fa-solid fa-list text-sm cursor-pointer hover:text-primary transition-colors"></i>
               <i class="fa-solid fa-link text-sm cursor-pointer hover:text-primary transition-colors"></i>
             </div>
-            <textarea
-              v-model="description"
+            <textarea v-model="description"
               class="w-full bg-transparent p-6 text-brand-dark placeholder:text-brand-gray/50 resize-none focus:outline-none focus:ring-0"
-              placeholder="Tell your story... What drives this change?"
-              rows="6"
-            ></textarea>
+              placeholder="Tell your story... What drives this change?" rows="6"></textarea>
           </div>
           <p v-if="errors.description" class="text-red-500 text-xs -mt-4">{{ errors.description }}</p>
 
           <!-- Logistics & Outcomes -->
           <div class="space-y-2">
             <label class="text-xs uppercase tracking-widest font-bold text-brand-gray">Logistics &amp; Outcomes</label>
-            <textarea
-              v-model="logistics"
+            <textarea v-model="logistics"
               class="w-full bg-surface-container-lowest rounded-2xl p-6 text-brand-dark placeholder:text-brand-gray/50 focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary transition-colors"
               placeholder="Detailed breakdown of how the funds will be utilized and specific impact metrics."
-              rows="4"
-            ></textarea>
+              rows="4"></textarea>
           </div>
         </div>
       </section>
@@ -85,10 +75,12 @@
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Primary Cover Image -->
-          <label class="lg:col-span-2 aspect-video bg-surface-container-low rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)]">
+          <label
+            class="lg:col-span-2 aspect-video bg-surface-container-low rounded-2xl flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden transition-all hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)]">
             <input type="file" accept="image/*" class="hidden" @change="onCoverImageChange" />
             <div class="relative z-10 flex flex-col items-center">
-              <i class="fa-solid fa-camera text-4xl text-brand-gray/40 group-hover:text-primary mb-2 transition-colors"></i>
+              <i
+                class="fa-solid fa-camera text-4xl text-brand-gray/40 group-hover:text-primary mb-2 transition-colors"></i>
               <p class="font-bold text-brand-dark text-sm">
                 {{ uploadedFiles.coverImage || 'Primary Cover Image' }}
               </p>
@@ -97,34 +89,44 @@
           </label>
           <!-- Additional image slots -->
           <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
-            <label class="aspect-square bg-surface-container-low rounded-2xl flex items-center justify-center cursor-pointer hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)] transition-all group">
+            <label
+              class="aspect-square bg-surface-container-low rounded-2xl flex items-center justify-center cursor-pointer hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)] transition-all group">
               <input type="file" accept="image/*" class="hidden" @change="(e) => onExtraImageChange(e, 0)" />
-              <i v-if="!uploadedFiles.extraImages[0]" class="fa-solid fa-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
-              <span v-else class="text-xs text-brand-dark font-medium text-center px-2 truncate">{{ uploadedFiles.extraImages[0] }}</span>
+              <i v-if="!uploadedFiles.extraImages[0]"
+                class="fa-solid fa-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
+              <span v-else class="text-xs text-brand-dark font-medium text-center px-2 truncate">{{
+                uploadedFiles.extraImages[0] }}</span>
             </label>
-            <label class="aspect-square bg-surface-container-low rounded-2xl flex items-center justify-center cursor-pointer hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)] transition-all group">
+            <label
+              class="aspect-square bg-surface-container-low rounded-2xl flex items-center justify-center cursor-pointer hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)] transition-all group">
               <input type="file" accept="image/*" class="hidden" @change="(e) => onExtraImageChange(e, 1)" />
-              <i v-if="!uploadedFiles.extraImages[1]" class="fa-solid fa-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
-              <span v-else class="text-xs text-brand-dark font-medium text-center px-2 truncate">{{ uploadedFiles.extraImages[1] }}</span>
+              <i v-if="!uploadedFiles.extraImages[1]"
+                class="fa-solid fa-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
+              <span v-else class="text-xs text-brand-dark font-medium text-center px-2 truncate">{{
+                uploadedFiles.extraImages[1] }}</span>
             </label>
           </div>
         </div>
       </section>
 
       <!-- Transparency Vault -->
-      <section class="bg-surface-container-lowest rounded-2xl p-8 space-y-6 relative overflow-hidden shadow-[0_4px_24px_rgba(22,28,34,0.04)]">
+      <section
+        class="bg-surface-container-lowest rounded-2xl p-8 space-y-6 relative overflow-hidden shadow-[0_4px_24px_rgba(22,28,34,0.04)]">
         <div class="absolute top-0 right-0 p-4">
-          <div class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black uppercase tracking-tight">
+          <div
+            class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black uppercase tracking-tight">
             <i class="fa-solid fa-shield-halved text-xs"></i>
             Vault Verified
           </div>
         </div>
         <div>
           <h2 class="text-xl font-bold tracking-tight mb-2 font-headline text-brand-dark">The Transparency Vault</h2>
-          <p class="text-sm text-brand-gray">Uploaded documents are cryptographically hashed to ensure trust and compliance.</p>
+          <p class="text-sm text-brand-gray">Uploaded documents are cryptographically hashed to ensure trust and
+            compliance.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label class="flex items-center justify-between p-4 bg-surface-container-low rounded-full cursor-pointer group hover:shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all">
+          <label
+            class="flex items-center justify-between p-4 bg-surface-container-low rounded-full cursor-pointer group hover:shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all">
             <div class="flex items-center gap-4">
               <i class="fa-solid fa-gavel text-primary"></i>
               <span class="text-sm font-medium text-brand-dark">
@@ -134,7 +136,8 @@
             <i class="fa-solid fa-upload text-brand-gray/40 group-hover:text-primary transition-colors"></i>
             <input type="file" accept=".pdf" class="hidden" @change="onLegalProofChange" />
           </label>
-          <label class="flex items-center justify-between p-4 bg-surface-container-low rounded-full cursor-pointer group hover:shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all">
+          <label
+            class="flex items-center justify-between p-4 bg-surface-container-low rounded-full cursor-pointer group hover:shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all">
             <div class="flex items-center gap-4">
               <i class="fa-solid fa-building-columns text-primary"></i>
               <span class="text-sm font-medium text-brand-dark">
@@ -158,7 +161,8 @@
             <div class="flex gap-4">
               <div class="w-1/3">
                 <label class="text-xs uppercase tracking-widest font-bold text-brand-gray block mb-2">Currency</label>
-                <select v-model="currency" class="w-full bg-surface-container-low rounded-full px-6 py-4 text-brand-dark font-bold focus:outline-none focus:ring-0">
+                <select v-model="currency"
+                  class="w-full bg-surface-container-low rounded-full px-6 py-4 text-brand-dark font-bold focus:outline-none focus:ring-0">
                   <option value="USD">USD</option>
                   <option value="EUR">EUR</option>
                   <option value="UAH">UAH</option>
@@ -167,27 +171,23 @@
               <div class="w-2/3">
                 <label class="text-xs uppercase tracking-widest font-bold text-brand-gray block mb-2">Amount</label>
                 <div class="relative">
-                  <span class="absolute left-6 top-1/2 -translate-y-1/2 text-brand-gray font-extrabold text-xl pointer-events-none">{{ currencySymbol }}</span>
-                  <input
-                    v-model.number="goalAmount"
-                    type="number"
-                    min="1"
+                  <span
+                    class="absolute left-6 top-1/2 -translate-y-1/2 text-brand-gray font-extrabold text-xl pointer-events-none">{{
+                    currencySymbol }}</span>
+                  <input v-model.number="goalAmount" type="number" min="1"
                     class="w-full bg-surface-container-low rounded-full pl-12 pr-6 py-4 text-brand-dark font-extrabold text-xl focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary transition-colors"
-                    placeholder="50,000"
-                  />
+                    placeholder="50,000" />
                 </div>
               </div>
             </div>
             <p v-if="errors.goalAmount" class="text-red-500 text-xs">{{ errors.goalAmount }}</p>
             <!-- Monobank Jar URL -->
             <div class="space-y-2">
-              <label class="text-xs uppercase tracking-widest font-bold text-brand-gray">Monobank Jar URL (optional)</label>
-              <input
-                v-model="monoJarUrl"
-                type="url"
+              <label class="text-xs uppercase tracking-widest font-bold text-brand-gray">Monobank Jar URL
+                (optional)</label>
+              <input v-model="monoJarUrl" type="url"
                 class="w-full bg-surface-container-lowest rounded-full px-6 py-4 text-brand-dark placeholder:text-brand-gray/50 focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary transition-colors"
-                placeholder="https://send.monobank.ua/jar/..."
-              />
+                placeholder="https://send.monobank.ua/jar/..." />
             </div>
           </div>
         </div>
@@ -220,49 +220,35 @@
             <i class="fa-solid fa-list-ol text-primary text-lg"></i>
             <h2 class="text-xl font-bold tracking-tight font-headline text-brand-dark">Funding Milestones</h2>
           </div>
-          <button
-            type="button"
+          <button type="button"
             class="text-primary text-sm font-bold flex items-center gap-1 hover:opacity-80 transition-opacity"
-            @click="addMilestone"
-          >
+            @click="addMilestone">
             <i class="fa-solid fa-circle-plus text-sm"></i>
             Add Milestone
           </button>
         </div>
         <div class="space-y-4">
-          <div
-            v-for="(milestone, index) in milestones"
-            :key="index"
+          <div v-for="(milestone, index) in milestones" :key="index"
             class="bg-surface-container-low p-6 rounded-2xl flex items-start gap-6"
-            :style="{ borderLeft: '4px solid #006c49' }"
-          >
-            <div class="h-10 w-10 shrink-0 bg-primary text-white rounded-full flex items-center justify-center font-extrabold text-sm">
+            :style="{ borderLeft: '4px solid #006c49' }">
+            <div
+              class="h-10 w-10 shrink-0 bg-primary text-white rounded-full flex items-center justify-center font-extrabold text-sm">
               {{ index + 1 }}
             </div>
             <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
-                v-model="milestone.title"
-                type="text"
+              <input v-model="milestone.title" type="text"
                 class="bg-transparent font-bold text-brand-dark p-0 focus:outline-none focus:ring-0 placeholder:text-brand-gray/40"
-                :placeholder="'Phase ' + (index + 1) + ': Description'"
-              />
+                :placeholder="'Phase ' + (index + 1) + ': Description'" />
               <div class="flex items-center justify-end gap-2">
                 <span class="text-xs font-bold text-brand-gray uppercase">Requirement:</span>
-                <input
-                  v-model.number="milestone.amount"
-                  type="number"
-                  min="0"
+                <input v-model.number="milestone.amount" type="number" min="0"
                   class="font-extrabold text-primary bg-transparent w-28 text-right p-0 focus:outline-none focus:ring-0 placeholder:text-brand-gray/40"
-                  placeholder="0"
-                />
+                  placeholder="0" />
                 <span class="text-sm font-bold text-brand-gray uppercase">{{ currencySymbol }}</span>
               </div>
             </div>
-            <button
-              type="button"
-              class="text-brand-gray/40 hover:text-red-500 transition-colors"
-              @click="removeMilestone(index)"
-            >
+            <button type="button" class="text-brand-gray/40 hover:text-red-500 transition-colors"
+              @click="removeMilestone(index)">
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
@@ -271,17 +257,12 @@
 
       <!-- Actions Footer -->
       <footer class="pt-12 flex flex-col md:flex-row gap-4 items-center justify-end">
-        <button
-          type="button"
-          class="w-full md:w-auto px-10 py-4 rounded-full font-bold text-brand-gray hover:bg-surface-container-low transition-colors"
-        >
+        <button type="button"
+          class="w-full md:w-auto px-10 py-4 rounded-full font-bold text-brand-gray hover:bg-surface-container-low transition-colors">
           Save Draft
         </button>
-        <button
-          type="submit"
-          :disabled="isSubmitting"
-          class="w-full md:w-auto px-12 py-4 rounded-full bg-primary text-white font-extrabold text-lg shadow-[0_8px_40px_rgba(0,108,73,0.2)] hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="submit" :disabled="isSubmitting"
+          class="w-full md:w-auto px-12 py-4 rounded-full bg-primary text-white font-extrabold text-lg shadow-[0_8px_40px_rgba(0,108,73,0.2)] hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isSubmitting ? 'Launching...' : 'Launch Campaign' }}
         </button>
       </footer>
@@ -373,7 +354,31 @@ const totalExpectedNet = computed(() => {
   return Math.max(0, net).toFixed(2);
 });
 
-// --- File Uploads (simulated) ---
+// --- Supabase Storage Upload Utility ---
+import { supabase } from '../lib/supabase';
+
+const BUCKET = 'campaign-assets';
+
+async function uploadToSupabase(file: File, folder: string): Promise<string> {
+  const ext = file.name.split('.').pop() || 'bin';
+  const uniqueName = `${folder}/${Date.now()}_${crypto.randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from(BUCKET)
+    .upload(uniqueName, file, { cacheControl: '3600', upsert: false });
+
+  if (error) throw new Error(`Upload failed: ${error.message}`);
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(uniqueName);
+  return data.publicUrl;
+}
+
+// --- Media State ---
+const images = reactive<{ url: string; type: 'cover' | 'gallery' }[]>([]);
+const legalProofUrl = ref('');
+const financialAuditUrl = ref('');
+
+// UI display labels
 const uploadedFiles = reactive({
   coverImage: '',
   extraImages: ['', ''] as string[],
@@ -381,24 +386,68 @@ const uploadedFiles = reactive({
   financialAudit: '',
 });
 
-const onCoverImageChange = (e: Event) => {
+// --- Upload Handlers ---
+const onCoverImageChange = async (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
-  uploadedFiles.coverImage = file?.name || '';
+  if (!file) return;
+  uploadedFiles.coverImage = `Uploading ${file.name}…`;
+  try {
+    const url = await uploadToSupabase(file, 'covers');
+    // Replace any existing cover entry
+    const idx = images.findIndex((i) => i.type === 'cover');
+    if (idx !== -1) images.splice(idx, 1);
+    images.push({ url, type: 'cover' });
+    uploadedFiles.coverImage = file.name;
+  } catch (err: any) {
+    console.error(err);
+    uploadedFiles.coverImage = 'Upload failed — try again';
+  }
 };
 
-const onExtraImageChange = (e: Event, index: number) => {
+const onExtraImageChange = async (e: Event, slotIndex: number) => {
   const file = (e.target as HTMLInputElement).files?.[0];
-  uploadedFiles.extraImages[index] = file?.name || '';
+  if (!file) return;
+  uploadedFiles.extraImages[slotIndex] = 'Uploading…';
+  try {
+    const url = await uploadToSupabase(file, 'gallery');
+    // Replace the gallery entry for this slot if it already exists
+    const galleryEntries = images.filter((i) => i.type === 'gallery');
+    if (galleryEntries[slotIndex]) {
+      const realIdx = images.indexOf(galleryEntries[slotIndex]);
+      images.splice(realIdx, 1);
+    }
+    images.push({ url, type: 'gallery' });
+    uploadedFiles.extraImages[slotIndex] = file.name;
+  } catch (err: any) {
+    console.error(err);
+    uploadedFiles.extraImages[slotIndex] = 'Upload failed';
+  }
 };
 
-const onLegalProofChange = (e: Event) => {
+const onLegalProofChange = async (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
-  uploadedFiles.legalProof = file?.name || '';
+  if (!file) return;
+  uploadedFiles.legalProof = `Uploading ${file.name}…`;
+  try {
+    legalProofUrl.value = await uploadToSupabase(file, 'documents');
+    uploadedFiles.legalProof = file.name;
+  } catch (err: any) {
+    console.error(err);
+    uploadedFiles.legalProof = 'Upload failed — try again';
+  }
 };
 
-const onFinancialAuditChange = (e: Event) => {
+const onFinancialAuditChange = async (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
-  uploadedFiles.financialAudit = file?.name || '';
+  if (!file) return;
+  uploadedFiles.financialAudit = `Uploading ${file.name}…`;
+  try {
+    financialAuditUrl.value = await uploadToSupabase(file, 'documents');
+    uploadedFiles.financialAudit = file.name;
+  } catch (err: any) {
+    console.error(err);
+    uploadedFiles.financialAudit = 'Upload failed — try again';
+  }
 };
 
 // --- Submit ---
@@ -410,7 +459,11 @@ const onSubmit = handleSubmit(async (values) => {
       categoryId: values.categoryId,
       description: values.description,
       goalAmount: values.goalAmount,
+      currency: currency.value,
       monoJarUrl: monoJarUrl.value || undefined,
+      images: images.length > 0 ? [...images] : undefined,
+      legalProofUrl: legalProofUrl.value || undefined,
+      financialAuditUrl: financialAuditUrl.value || undefined,
       milestones: milestones
         .filter((m) => m.title.trim())
         .map((m) => ({ title: m.title, amount: m.amount })),
