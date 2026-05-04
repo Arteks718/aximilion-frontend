@@ -8,7 +8,7 @@
         <div class="space-y-6">
           <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
             <i class="fa-solid fa-shield-halved text-sm mr-2"></i>
-            <span class="text-xs font-medium uppercase tracking-wider font-label">The Ethical Ledger</span>
+            <span class="text-xs font-medium uppercase tracking-wider font-label">Aximilion</span>
           </div>
           <h1 class="text-4xl font-extrabold tracking-tight leading-tight font-headline">Empowering transparency through capital.</h1>
           <p class="text-[#4edea3] opacity-90 text-lg leading-relaxed">Join a global community of impact investors tracking every dollar from contribution to change.</p>

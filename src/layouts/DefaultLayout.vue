@@ -48,7 +48,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-12">
           <div class="md:col-span-1">
-            <span class="font-bold text-xl tracking-tight block mb-4 font-headline">The Ethical Ledger</span>
+            <span class="font-bold text-xl tracking-tight block mb-4 font-headline">Aximilion</span>
             <p class="text-sm text-brand-gray leading-relaxed pr-4">
               Pioneering verified transparency in global giving through verifiable blockchain forensics and meticulous human auditing.
             </p>
