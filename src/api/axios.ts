@@ -1,14 +1,16 @@
 import axios from 'axios';
 
+import { supabase } from '../lib/supabase';
+
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config) => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session && config.headers) {
+      config.headers.Authorization = `Bearer ${data.session.access_token}`;
     }
     return config;
   },

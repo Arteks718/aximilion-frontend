@@ -26,11 +26,11 @@
           <!-- Action Buttons -->
           <div class="flex items-center gap-4">
             <template v-if="!authStore.isAuthenticated">
-              <router-link to="/login" class="text-brand-dark font-medium hover:text-brand-green transition-colors text-sm">Sign In</router-link>
-              <router-link to="/register" class="bg-[#006C49] text-surface-container-lowest px-4 py-2 rounded-full font-medium text-sm hover:bg-[#005236] transition-colors shadow-sm">Create Campaign</router-link>
+              <router-link :to="{name: 'login'}" class="text-brand-dark font-medium hover:text-brand-green transition-colors text-sm">Sign In</router-link>
+              <router-link :to="{name: 'register'}" class="bg-[#006C49] text-surface-container-lowest px-4 py-2 rounded-full font-medium text-sm hover:bg-[#005236] transition-colors shadow-sm">Create Campaign</router-link>
             </template>
             <template v-else>
-              <router-link to="/dashboard" class="text-brand-dark font-medium hover:text-brand-green transition-colors text-sm">Dashboard</router-link>
+              <router-link :to="{name: 'dashboard'}" class="text-brand-dark font-medium hover:text-brand-green transition-colors text-sm">Dashboard</router-link>
               <button @click="logout" class="bg-[#006C49] text-surface-container-lowest px-4 py-2 rounded-full font-medium text-sm hover:bg-[#005236] transition-colors shadow-sm">Logout</button>
             </template>
           </div>

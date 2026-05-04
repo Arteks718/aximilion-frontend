@@ -1,31 +1,83 @@
 import { defineStore } from 'pinia';
+import { supabase } from '../lib/supabase';
 import api from '../api/axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as any | null,
-    token: localStorage.getItem('token') || null,
+    session: null as any | null,
+    isInitialized: false,
   }),
   getters: {
-    isAuthenticated: (state) => !!state.token,
+    isAuthenticated: (state) => !!state.session,
   },
   actions: {
+    async initialize() {
+      if (this.isInitialized) return;
+
+      const { data } = await supabase.auth.getSession();
+      this.session = data.session;
+
+      try {
+        const response = await api.post('/auth/sync');
+        // Overwrite user with the local DB record (includes role, id, etc.)
+        this.user = response.data;
+      } catch (err) {
+        console.error('Failed to sync user on initialize:', err);
+      }
+
+      supabase.auth.onAuthStateChange((_event, session) => {
+        this.session = session;
+      });
+
+      this.isInitialized = true;
+    },
+
     async login(credentials: any) {
-      const response = await api.post('/auth/login', credentials);
-      this.token = response.data.access_token;
-      localStorage.setItem('token', this.token!);
-      this.user = { email: credentials.email }; 
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: credentials.email,
+        password: credentials.password,
+      });
+      if (error) throw error;
+      this.session = data.session;
+      this.user = data.user;
+
+      try {
+        const response = await api.post('/auth/sync');
+        // Overwrite user with the local DB record (includes role, id, etc.)
+        this.user = response.data;
+      } catch (err) {
+        console.error('Failed to sync user on login:', err);
+      }
     },
-    async register(data: any) {
-      const response = await api.post('/auth/register', data);
-      this.token = response.data.access_token;
-      localStorage.setItem('token', this.token!);
-      this.user = { email: data.email };
+
+    async register(userData: any) {
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: userData.email,
+        password: userData.password,
+        options: {
+          data: {
+            full_name: userData.name,
+          },
+        },
+      });
+      if (error) throw error;
+      this.session = authData.session;
+      this.user = authData.user;
+
+      try {
+        const response = await api.post('/auth/sync');
+        // Overwrite user with the local DB record (includes role, id, etc.)
+        this.user = response.data;
+      } catch (err) {
+        console.error('Failed to sync user on register:', err);
+      }
     },
-    logout() {
+
+    async logout() {
+      await supabase.auth.signOut();
+      this.session = null;
       this.user = null;
-      this.token = null;
-      localStorage.removeItem('token');
     },
   },
 });

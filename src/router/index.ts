@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
 import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import AuthView from '../views/AuthView.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -21,30 +20,34 @@ const router = createRouter({
         {
           path: 'login',
           name: 'login',
-          component: LoginView
+          component: AuthView
         },
         {
           path: 'register',
           name: 'register',
-          component: RegisterView
+          component: AuthView
         },
         {
           path: 'dashboard',
           name: 'dashboard',
           component: DashboardView,
-          meta: { requiresAuth: true }
+          meta: { auth: true }
         }
       ]
     }
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore()
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next({ name: 'login' })
-  } else {
-    next()
+
+  // Wait for Supabase session to be restored before making any redirect decisions
+  if (!authStore.isInitialized) {
+    await authStore.initialize()
+  }
+
+  if (to.meta.auth && !authStore.isAuthenticated) {
+    return { name: 'login' }
   }
 })
 
