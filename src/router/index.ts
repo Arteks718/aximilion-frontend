@@ -3,6 +3,7 @@ import DefaultLayout from '../layouts/DefaultLayout.vue'
 import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import AuthView from '../views/AuthView.vue'
+import CreateCampaignView from '../views/CreateCampaignView.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -31,6 +32,12 @@ const router = createRouter({
           path: 'dashboard',
           name: 'dashboard',
           component: DashboardView,
+          meta: { auth: true }
+        },
+        {
+          path: 'create-campaign',
+          name: 'create-campaign',
+          component: CreateCampaignView,
           meta: { auth: true }
         }
       ]
