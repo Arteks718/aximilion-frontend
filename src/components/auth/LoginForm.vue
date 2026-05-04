@@ -42,7 +42,7 @@
         <span v-if="isSubmitting">Signing In...</span>
         <template v-else>
           <span>Sign In</span>
-          <i class="fa-solid fa-arrow-right text-lg"></i>
+          <i class="pi pi-arrow-right text-lg"></i>
         </template>
       </button>
     </div>

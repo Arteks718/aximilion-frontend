@@ -54,7 +54,7 @@
         <span v-if="isSubmitting">Creating...</span>
         <template v-else>
           <span>Create Account</span>
-          <i class="fa-solid fa-arrow-right text-lg"></i>
+          <i class="pi pi-arrow-right text-lg"></i>
         </template>
       </button>
     </div>

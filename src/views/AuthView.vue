@@ -7,7 +7,7 @@
       <div class="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#006c49] to-[#10b981] p-12 flex-col justify-between text-white">
         <div class="space-y-6">
           <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-            <i class="fa-solid fa-shield-halved text-sm mr-2"></i>
+            <i class="pi pi-shield !text-sm mr-2"></i>
             <span class="text-xs font-medium uppercase tracking-wider font-label">Aximilion</span>
           </div>
           <h1 class="text-4xl font-extrabold tracking-tight leading-tight font-headline">Empowering transparency through capital.</h1>
@@ -51,7 +51,7 @@
 
         <!-- Secure Indicator -->
         <div class="mt-12 flex items-center justify-center space-x-2 text-[#6c7a71]">
-          <i class="fa-solid fa-lock text-sm"></i>
+          <i class="pi pi-lock !text-sm"></i>
           <span class="text-[10px] font-bold uppercase tracking-[0.2em] font-label">Bank-Level 256-bit Encryption</span>
         </div>
       </div>

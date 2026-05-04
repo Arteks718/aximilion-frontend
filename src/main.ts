@@ -9,6 +9,5 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue, { unstyled: true })
-
+app.use(PrimeVue)
 app.mount('#app')

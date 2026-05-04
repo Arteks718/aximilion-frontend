@@ -18,7 +18,7 @@
           <div class="hidden lg:flex flex-1 justify-center px-8">
             <div class="max-w-md w-full relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fa-solid fa-search text-brand-gray text-sm"></i>
+                <i class="pi pi-search text-brand-gray !text-sm"></i>
               </div>
               <input class="block w-full pl-10 pr-3 py-2 bg-surface-container-low rounded-full leading-5 placeholder-brand-gray focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-brand-green sm:text-sm transition-colors" placeholder="Search campaigns..." type="text"/>
             </div>
@@ -83,9 +83,9 @@
             © 2026 Aximilion. Built for transparency.
           </p>
           <div class="flex items-center gap-4 text-brand-gray">
-            <a class="hover:text-brand-dark transition-colors" href="#"><i class="fa-solid fa-globe"></i></a>
-            <a class="hover:text-brand-dark transition-colors" href="#"><i class="fa-brands fa-twitter"></i></a>
-            <a class="hover:text-brand-dark transition-colors" href="#"><i class="fa-solid fa-share-nodes"></i></a>
+            <a class="hover:text-brand-dark transition-colors" href="#"><i class="pi pi-globe"></i></a>
+            <a class="hover:text-brand-dark transition-colors" href="#"><i class="pi pi-twitter"></i></a>
+            <a class="hover:text-brand-dark transition-colors" href="#"><i class="pi pi-share-alt"></i></a>
           </div>
         </div>
       </div>

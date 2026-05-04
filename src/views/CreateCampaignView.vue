@@ -38,25 +38,17 @@
       <!-- Narrative & Impact -->
       <section class="space-y-8">
         <div class="flex items-center gap-3">
-          <i class="fa-solid fa-scroll text-primary text-lg"></i>
+          <i class="pi pi-briefcase !text-primary !text-lg"></i>
           <h2 class="text-xl font-bold tracking-tight font-headline text-brand-dark">Narrative &amp; Impact</h2>
         </div>
         <div class="space-y-6">
-          <!-- Rich text area (simplified) -->
           <div class="bg-surface-container-low rounded-2xl overflow-hidden">
-            <div class="bg-surface-container-lowest/60 px-6 py-3 flex gap-4 text-brand-gray">
-              <i class="fa-solid fa-bold text-sm cursor-pointer hover:text-primary transition-colors"></i>
-              <i class="fa-solid fa-italic text-sm cursor-pointer hover:text-primary transition-colors"></i>
-              <i class="fa-solid fa-list text-sm cursor-pointer hover:text-primary transition-colors"></i>
-              <i class="fa-solid fa-link text-sm cursor-pointer hover:text-primary transition-colors"></i>
-            </div>
             <textarea v-model="description"
               class="w-full bg-transparent p-6 text-brand-dark placeholder:text-brand-gray/50 resize-none focus:outline-none focus:ring-0"
               placeholder="Tell your story... What drives this change?" rows="6"></textarea>
           </div>
           <p v-if="errors.description" class="text-red-500 text-xs -mt-4">{{ errors.description }}</p>
 
-          <!-- Logistics & Outcomes -->
           <div class="space-y-2">
             <label class="text-xs uppercase tracking-widest font-bold text-brand-gray">Logistics &amp; Outcomes</label>
             <textarea v-model="logistics"
@@ -70,7 +62,7 @@
       <!-- Visual Assets -->
       <section class="space-y-6">
         <div class="flex items-center gap-3">
-          <i class="fa-solid fa-images text-primary text-lg"></i>
+          <i class="pi pi-image !text-primary text-lg"></i>
           <h2 class="text-xl font-bold tracking-tight font-headline text-brand-dark">Visual Assets</h2>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -80,7 +72,7 @@
             <input type="file" accept="image/*" class="hidden" @change="onCoverImageChange" />
             <div class="relative z-10 flex flex-col items-center">
               <i
-                class="fa-solid fa-camera text-4xl text-brand-gray/40 group-hover:text-primary mb-2 transition-colors"></i>
+                class="pi pi-camera text-4xl text-brand-gray/40 group-hover:text-primary mb-2 transition-colors"></i>
               <p class="font-bold text-brand-dark text-sm">
                 {{ uploadedFiles.coverImage || 'Primary Cover Image' }}
               </p>
@@ -93,7 +85,7 @@
               class="aspect-square bg-surface-container-low rounded-2xl flex items-center justify-center cursor-pointer hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)] transition-all group">
               <input type="file" accept="image/*" class="hidden" @change="(e) => onExtraImageChange(e, 0)" />
               <i v-if="!uploadedFiles.extraImages[0]"
-                class="fa-solid fa-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
+                class="pi pi-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
               <span v-else class="text-xs text-brand-dark font-medium text-center px-2 truncate">{{
                 uploadedFiles.extraImages[0] }}</span>
             </label>
@@ -101,7 +93,7 @@
               class="aspect-square bg-surface-container-low rounded-2xl flex items-center justify-center cursor-pointer hover:shadow-[0_8px_40px_rgba(22,28,34,0.06)] transition-all group">
               <input type="file" accept="image/*" class="hidden" @change="(e) => onExtraImageChange(e, 1)" />
               <i v-if="!uploadedFiles.extraImages[1]"
-                class="fa-solid fa-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
+                class="pi pi-plus text-brand-gray/40 group-hover:text-primary transition-colors"></i>
               <span v-else class="text-xs text-brand-dark font-medium text-center px-2 truncate">{{
                 uploadedFiles.extraImages[1] }}</span>
             </label>
@@ -115,7 +107,7 @@
         <div class="absolute top-0 right-0 p-4">
           <div
             class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black uppercase tracking-tight">
-            <i class="fa-solid fa-shield-halved text-xs"></i>
+            <i class="pi pi-shield !text-xs"></i>
             Vault Verified
           </div>
         </div>
@@ -128,23 +120,23 @@
           <label
             class="flex items-center justify-between p-4 bg-surface-container-low rounded-full cursor-pointer group hover:shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all">
             <div class="flex items-center gap-4">
-              <i class="fa-solid fa-gavel text-primary"></i>
+              <i class="pi pi-hammer text-primary"></i>
               <span class="text-sm font-medium text-brand-dark">
                 {{ uploadedFiles.legalProof || 'Legal Proof (PDF)' }}
               </span>
             </div>
-            <i class="fa-solid fa-upload text-brand-gray/40 group-hover:text-primary transition-colors"></i>
+            <i class="pi pi-upload text-brand-gray/40 group-hover:text-primary transition-colors"></i>
             <input type="file" accept=".pdf" class="hidden" @change="onLegalProofChange" />
           </label>
           <label
             class="flex items-center justify-between p-4 bg-surface-container-low rounded-full cursor-pointer group hover:shadow-[0_4px_24px_rgba(22,28,34,0.04)] transition-all">
             <div class="flex items-center gap-4">
-              <i class="fa-solid fa-building-columns text-primary"></i>
+              <i class="pi pi-warehouse text-primary"></i>
               <span class="text-sm font-medium text-brand-dark">
                 {{ uploadedFiles.financialAudit || 'Financial Audit' }}
               </span>
             </div>
-            <i class="fa-solid fa-upload text-brand-gray/40 group-hover:text-primary transition-colors"></i>
+            <i class="pi pi-upload text-brand-gray/40 group-hover:text-primary transition-colors"></i>
             <input type="file" accept=".pdf,.csv,.xlsx" class="hidden" @change="onFinancialAuditChange" />
           </label>
         </div>
@@ -154,7 +146,7 @@
       <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         <div class="space-y-6">
           <div class="flex items-center gap-3">
-            <i class="fa-solid fa-coins text-primary text-lg"></i>
+            <i class="pi pi-coin text-primary text-lg"></i>
             <h2 class="text-xl font-bold tracking-tight font-headline text-brand-dark">Capital Target</h2>
           </div>
           <div class="space-y-4">
@@ -217,13 +209,13 @@
       <section class="space-y-6">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <i class="fa-solid fa-list-ol text-primary text-lg"></i>
+            <i class="pi pi-list text-primary text-lg"></i>
             <h2 class="text-xl font-bold tracking-tight font-headline text-brand-dark">Funding Milestones</h2>
           </div>
           <button type="button"
             class="text-primary text-sm font-bold flex items-center gap-1 hover:opacity-80 transition-opacity"
             @click="addMilestone">
-            <i class="fa-solid fa-circle-plus text-sm"></i>
+            <i class="pi pi-plus-circle !text-sm"></i>
             Add Milestone
           </button>
         </div>
@@ -249,7 +241,7 @@
             </div>
             <button type="button" class="text-brand-gray/40 hover:text-red-500 transition-colors"
               @click="removeMilestone(index)">
-              <i class="fa-solid fa-trash"></i>
+              <i class="pi pi-trash !text-sm"></i>
             </button>
           </div>
         </div>

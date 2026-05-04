@@ -13,7 +13,7 @@
           </p>
           <div class="flex flex-wrap gap-4">
             <router-link to="/dashboard" class="bg-[#006C49] text-surface-container-lowest px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-[#005236] transition-colors shadow-sm">
-              Donate Now <i class="fa-solid fa-arrow-right text-white text-sm"></i>
+              Donate Now <i class="pi pi-arrow-right text-white text-sm"></i>
             </router-link>
             <a class="bg-surface-container-low text-brand-dark px-6 py-3 rounded-full font-medium hover:bg-surface-container-highest transition-colors" href="#">
               View Reports
@@ -37,7 +37,7 @@
           </div>
           <div class="bg-[#006C49] rounded-3xl p-6 text-surface-container-lowest shadow-sm flex flex-col items-center justify-center min-h-[140px] gap-2">
             <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-1">
-              <i class="fa-solid fa-check text-white text-xl"></i>
+              <i class="pi pi-check text-white text-xl"></i>
             </div>
             <p class="font-bold text-lg">100% Verified</p>
           </div>
@@ -74,7 +74,7 @@
           <p class="text-brand-gray text-sm">Direct impact backed by rigorous documentation.</p>
         </div>
         <router-link to="/explore" class="text-sm font-medium text-brand-dark hover:text-brand-green flex items-center gap-1">
-          View All <i class="fa-solid fa-arrow-right text-xs"></i>
+          View All <i class="pi pi-arrow-right text-xs"></i>
         </router-link>
       </div>
 
