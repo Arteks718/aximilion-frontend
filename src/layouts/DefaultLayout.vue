@@ -4,34 +4,72 @@
     <header class="bg-surface-container-lowest/80 backdrop-blur-[24px] sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
-          <!-- Logo -->
-          <div class="flex-shrink-0 flex items-center gap-2">
-            <router-link to="/" class="font-bold text-xl tracking-tight text-brand-dark font-headline">Auxilium</router-link>
+          <!-- Left side: Logo & Explore -->
+          <div class="flex items-center">
+            <!-- Logo -->
+            <div class="flex-shrink-0 flex items-center gap-2">
+              <router-link to="/" class="font-bold text-xl tracking-tight text-brand-dark font-headline">
+                <img :src="Logo" alt="Aximilion" width="175"/>
+              </router-link>
+            </div>
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex ml-12">
+              <router-link :to="{ name: 'campaigns' }" class="text-brand-dark font-medium border-b-2 border-transparent hover:border-brand-green py-5 px-4 transition-colors">Explore</router-link>
+            </nav>
           </div>
-          <!-- Navigation Links (Desktop) -->
-          <nav class="hidden md:flex space-x-8">
-            <router-link :to="{ name: 'campaigns' }" class="text-brand-dark font-medium border-b-2 border-brand-green py-5 px-4">Explore</router-link>
-            <a class="text-brand-gray hover:text-brand-dark font-medium px-1 py-5 transition-colors" href="#">Impact</a>
-            <a class="text-brand-gray hover:text-brand-dark font-medium px-1 py-5 transition-colors" href="#">Transparency</a>
-          </nav>
-          <!-- Search Bar -->
+
           <div class="hidden lg:flex flex-1 justify-center px-8">
-            <div class="max-w-md w-full relative">
+            <div class="max-w-lg w-full relative z-50">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <i class="pi pi-search text-brand-gray !text-sm"></i>
               </div>
-              <input class="block w-full pl-10 pr-3 py-2 bg-surface-container-low rounded-full leading-5 placeholder-brand-gray focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-brand-green sm:text-sm transition-colors" placeholder="Search campaigns..." type="text"/>
+              <input 
+                v-model="searchQuery" 
+                @input="onSearchInput"
+                class="block w-full pl-10 pr-3 py-2 bg-surface-container-low rounded-full leading-5 placeholder-brand-gray focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-brand-green sm:text-sm transition-colors" 
+                placeholder="Search campaigns..." 
+                type="text"
+              />
+              
+              <!-- Search Dropdown Panel -->
+              <div v-if="searchQuery.trim().length > 0" class="absolute top-full mt-2 w-full bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden z-50">
+                <div v-if="isSearching" class="p-4 flex justify-center">
+                  <ProgressSpinner style="width: 30px; height: 30px" strokeWidth="4" />
+                </div>
+                <div v-else-if="searchResults.length === 0" class="p-4 text-center text-sm text-brand-gray">
+                  No campaigns found.
+                </div>
+                <ul v-else class="max-h-80 overflow-y-auto">
+                  <li v-for="result in searchResults" :key="result.id" class="border-b border-gray-50 last:border-0 hover:bg-surface-container-lowest transition-colors">
+                    <router-link 
+                      :to="{ name: 'campaign-detail', params: { id: result.id } }" 
+                      @click="clearSearch"
+                      class="flex items-center gap-3 p-3"
+                    >
+                      <div class="w-10 h-10 flex-shrink-0 bg-surface-container-low rounded-md overflow-hidden">
+                        <img v-if="result.coverUrl" :src="result.coverUrl" class="w-full h-full object-cover" />
+                        <div v-else class="w-full h-full flex items-center justify-center text-brand-gray bg-gray-100"><i class="pi pi-image text-xs"></i></div>
+                      </div>
+                      <span class="text-sm font-medium text-brand-dark line-clamp-2 leading-tight flex-1">{{ result.title }}</span>
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
           <!-- Action Buttons -->
           <div class="flex items-center gap-4">
             <template v-if="!authStore.isAuthenticated">
               <router-link :to="{name: 'login'}" class="text-brand-dark font-medium hover:text-brand-green transition-colors text-sm">Sign In</router-link>
-              <router-link :to="{name: 'create-campaign'}" class="bg-[#006C49] text-surface-container-lowest px-4 py-2 rounded-full font-medium text-sm hover:bg-[#005236] transition-colors shadow-sm">Create Campaign</router-link>
+              <router-link :to="{name: 'register'}" class="bg-[#006C49] text-surface-container-lowest px-4 py-2 rounded-full font-medium text-sm hover:bg-[#005236] transition-colors shadow-sm">Sign Up</router-link>
             </template>
             <template v-else>
-              <router-link :to="{name: 'dashboard'}" class="text-brand-dark font-medium hover:text-brand-green transition-colors text-sm">Dashboard</router-link>
-              <button @click="logout" class="bg-[#006C49] text-surface-container-lowest px-4 py-2 rounded-full font-medium text-sm hover:bg-[#005236] transition-colors shadow-sm">Logout</button>
+              <div class="relative flex items-center">
+                <button @click="toggleMenu" aria-haspopup="true" aria-controls="user_menu" class="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-brand-lightGreen text-brand-green hover:ring-2 hover:ring-brand-green transition-all shadow-sm">
+                  {{ userInitials }}
+                </button>
+                <Menu ref="menu" id="user_menu" :model="menuItems" :popup="true" class="mt-2 w-48" />
+              </div>
             </template>
           </div>
         </div>
@@ -94,14 +132,92 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
+import Menu from 'primevue/menu';
+import ProgressSpinner from 'primevue/progressspinner';
+import Logo from '/aximilion-logo.svg';
+import api from '../api/axios';
 
 const authStore = useAuthStore();
 const router = useRouter();
 
+const menu = ref();
+
+const toggleMenu = (event: any) => {
+  menu.value.toggle(event);
+};
+
 const logout = () => {
   authStore.logout();
-  router.push('/login');
+  router.push({ name: 'login' });
 };
+
+// Search state
+const searchQuery = ref('');
+const searchResults = ref<any[]>([]);
+const isSearching = ref(false);
+
+let debounceTimeout: ReturnType<typeof setTimeout>;
+
+const onSearchInput = () => {
+  if (!searchQuery.value.trim()) {
+    searchResults.value = [];
+    isSearching.value = false;
+    return;
+  }
+
+  isSearching.value = true;
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(async () => {
+    try {
+      const response = await api.get(`/campaigns/search?q=${encodeURIComponent(searchQuery.value)}`);
+      searchResults.value = response.data;
+    } catch (error) {
+      console.error('Search failed:', error);
+      searchResults.value = [];
+    } finally {
+      isSearching.value = false;
+    }
+  }, 300);
+};
+
+const clearSearch = () => {
+  searchQuery.value = '';
+  searchResults.value = [];
+};
+
+const menuItems = ref([
+  {
+    label: 'Profile',
+    icon: 'pi pi-user',
+    command: () => {
+      router.push({ name: 'profile' });
+    }
+  },
+  {
+    label: 'Dashboard',
+    icon: 'pi pi-chart-line',
+    command: () => {
+      router.push({ name: 'dashboard' });
+    }
+  },
+  {
+    separator: true
+  },
+  {
+    label: 'Logout',
+    icon: 'pi pi-sign-out',
+    command: () => {
+      logout();
+    }
+  }
+]);
+
+const userInitials = computed(() => {
+  if (!authStore.user) return 'U';
+  const email = authStore.user.email || '';
+  return email.substring(0, 2).toUpperCase() || 'U';
+});
 </script>
