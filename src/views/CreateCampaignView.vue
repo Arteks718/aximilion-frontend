@@ -448,7 +448,7 @@ const onSubmit = handleSubmit(async (values) => {
         .filter((m) => m.title.trim())
         .map((m) => ({ title: m.title, amount: m.amount })),
     });
-    router.push('/dashboard');
+    router.push({name: 'dashboard'});
   } catch (err: any) {
     console.error('Failed to create campaign:', err);
     alert(err?.response?.data?.message || 'Failed to create campaign. Please try again.');

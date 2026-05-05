@@ -99,7 +99,7 @@ const onSubmit = handleSubmit(async (values) => {
   globalError.value = '';
   try {
     await authStore.login(values);
-    router.push('/dashboard');
+    router.push({name: 'dashboard'});
   } catch (error: any) {
     globalError.value = error.response?.data?.message || 'Login failed. Please check your credentials.';
   }

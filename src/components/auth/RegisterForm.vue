@@ -113,7 +113,7 @@ const onSubmit = handleSubmit(async (values) => {
   globalError.value = '';
   try {
     await authStore.register(values);
-    router.push('/dashboard');
+    router.push({name: 'dashboard'});
   } catch (error: any) {
     globalError.value = error.response?.data?.message || 'Registration failed. Please try again.';
   }
