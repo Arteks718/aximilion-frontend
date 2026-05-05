@@ -22,15 +22,18 @@
           <div class="bg-surface-container-lowest rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center min-h-[140px] shadow-[0_4px_24px_rgba(22,28,34,0.04)]">
             <div class="absolute top-0 right-0 w-24 h-24 bg-brand-lightGreen rounded-bl-full -mr-8 -mt-8 opacity-50"></div>
             <p class="text-sm font-medium text-brand-gray mb-1 relative z-10">Total Funds Raised</p>
-            <p class="text-4xl font-bold text-brand-dark relative z-10 font-headline">{{ statsStore.totalFundsRaised }}</p>
+            <Skeleton v-if="isLoadingStats" width="8rem" height="2.5rem" class="relative z-10" />
+            <p v-else class="text-4xl font-bold text-brand-dark relative z-10 font-headline">${{ formatCompactNumber(platformStats.totalFundsRaised) }}</p>
           </div>
           <div class="bg-surface-container-lowest rounded-3xl p-6 flex flex-col justify-center min-h-[140px] shadow-[0_4px_24px_rgba(22,28,34,0.04)]">
             <p class="text-sm font-medium text-brand-gray mb-1">Active Campaigns</p>
-            <p class="text-4xl font-bold text-brand-dark font-headline">{{ statsStore.activeCampaigns }}</p>
+            <Skeleton v-if="isLoadingStats" width="6rem" height="2.5rem" />
+            <p v-else class="text-4xl font-bold text-brand-dark font-headline">{{ formatCompactNumber(platformStats.activeCampaigns) }}</p>
           </div>
           <div class="bg-surface-container-lowest rounded-3xl p-6 flex flex-col justify-center min-h-[140px] shadow-[0_4px_24px_rgba(22,28,34,0.04)]">
             <p class="text-sm font-medium text-brand-gray mb-1">Total Donors</p>
-            <p class="text-4xl font-bold text-brand-dark font-headline">{{ statsStore.totalDonors }}</p>
+            <Skeleton v-if="isLoadingStats" width="6rem" height="2.5rem" />
+            <p v-else class="text-4xl font-bold text-brand-dark font-headline">{{ formatCompactNumber(platformStats.totalDonors) }}</p>
           </div>
           <div class="bg-[#006C49] rounded-3xl p-6 text-surface-container-lowest shadow-sm flex flex-col items-center justify-center min-h-[140px] gap-2">
             <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-1">
@@ -368,7 +371,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStatsStore } from '../stores/stats';
 import api from '../api/axios';
 
 // PrimeVue components
@@ -376,7 +378,6 @@ import ProgressBar from 'primevue/progressbar';
 import Skeleton from 'primevue/skeleton';
 
 const router = useRouter();
-const statsStore = useStatsStore();
 
 // --- Campaign types ---
 interface CampaignImage { url: string; type: string; }
@@ -406,6 +407,11 @@ interface Donation {
   donorName: string;
   createdAt: string;
 }
+interface PlatformStats {
+  totalDonors: number;
+  activeCampaigns: number;
+  totalFundsRaised: number;
+}
 
 const DEFAULT_CATEGORY_ID = 'All'
 
@@ -420,6 +426,9 @@ const categories = ref<Category[]>([
 
 const latestDonations = ref<Donation[]>([]);
 const isLoadingDonations = ref(true);
+
+const platformStats = ref<PlatformStats>({ totalDonors: 0, activeCampaigns: 0, totalFundsRaised: 0 });
+const isLoadingStats = ref(true);
 
 // --- Helpers ---
 const currencySymbolMap: Record<string, string> = { USD: '$', EUR: '€', UAH: '₴' };
@@ -444,6 +453,16 @@ function formatAmount(val: string | number): string {
   const n = typeof val === 'string' ? parseFloat(val) : val;
   if (!n || isNaN(n)) return '0';
   return n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+}
+
+function formatCompactNumber(num: number): string {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  }
+  return num.toString();
 }
 
 function progressPercent(c: any): number {
@@ -519,6 +538,18 @@ async function fetchLatestDonations() {
   }
 }
 
+async function fetchPlatformStats() {
+  isLoadingStats.value = true;
+  try {
+    const { data } = await api.get('/stats/platform');
+    platformStats.value = data;
+  } catch (err) {
+    console.error('Failed to fetch platform stats:', err);
+  } finally {
+    isLoadingStats.value = false;
+  }
+}
+
 function handleCategoryClick(catId: string) {
   if(selectedCategory.value === catId) return;
   selectedCategory.value = catId;
@@ -530,7 +561,7 @@ function navigateToDetail(id: string) {
 }
 
 onMounted(async () => {
-  statsStore.fetchStats();
+  await fetchPlatformStats();
   await fetchCampaigns();
   await fetchCategories();
   await fetchLatestDonations();
