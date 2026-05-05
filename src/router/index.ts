@@ -11,6 +11,14 @@ import ProfileView from '../views/ProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    // Returns to top if no saved position (like 'back' button) exists
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },
   routes: [
     {
       path: '/',
@@ -72,6 +80,8 @@ router.beforeEach(async (to) => {
   if (!authStore.isInitialized) {
     await authStore.initialize()
   }
+
+  console.log('router')
 
   if (to.meta.auth && !authStore.isAuthenticated) {
     return { name: 'login' }
