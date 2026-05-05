@@ -62,6 +62,14 @@
           </div>
         </div>
 
+        <!-- Story skeleton -->
+        <div v-if="isLoading" class="space-y-6">
+          <Skeleton width="30%" height="2rem" />
+          <div class="space-y-4">
+            <Skeleton width="100%" height="1.5rem" v-for="n in 6" :key="'s-skel-'+n" />
+          </div>
+        </div>
+
         <!-- Verified Files -->
         <section
           v-if="!isLoading && (campaign?.legalProofUrl || campaign?.financialAuditUrl)"
@@ -153,42 +161,38 @@
           </div>
         </section>
 
-        <!-- Wall of Kindness (placeholder) -->
-        <section v-if="!isLoading" class="space-y-8 pb-12">
+        <!-- Wall of Kindness -->
+        <section v-if="!isLoading && donations.length > 0" class="space-y-8 pb-12">
           <h2 class="text-2xl font-bold text-brand-dark font-headline">Wall of Kindness</h2>
           <div class="space-y-4">
-            <div class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl border-l-4 border-brand-green">
+            <div
+              v-for="donation in donations"
+              :key="donation.id"
+              class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl border border-surface-container-high hover:border-brand-green/30 transition-colors"
+            >
               <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-brand-lightGreen flex items-center justify-center font-bold text-brand-green">AD</div>
-                <div>
-                  <p class="font-bold text-brand-dark">Anne D.</p>
-                  <p class="text-sm text-brand-gray">"So proud to support this vital infrastructure!"</p>
-                </div>
-              </div>
-              <span class="text-lg font-bold text-brand-green">$15.00</span>
-            </div>
-            <div class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-brand-gray">
-                  <i class="pi pi-user"></i>
+                <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold"
+                     :class="donation.donorName === 'Anonymous' ? 'bg-surface-container-high text-brand-gray' : 'bg-brand-lightGreen text-brand-green'">
+                  <i v-if="donation.donorName === 'Anonymous'" class="pi pi-user"></i>
+                  <span v-else>{{ donation.donorName.substring(0, 2).toUpperCase() }}</span>
                 </div>
                 <div>
-                  <p class="font-bold text-brand-dark">Anonymous</p>
-                  <p class="text-sm text-brand-gray">2 hours ago</p>
+                  <p class="font-bold text-brand-dark">{{ donation.donorName }}</p>
+                  <p class="text-sm text-brand-gray">{{ timeAgo(donation.createdAt) }}</p>
                 </div>
               </div>
-              <span class="text-lg font-bold text-brand-green">$500.00</span>
+              <span class="text-lg font-bold text-brand-green">{{ getCurrencySymbol(donation.currency) }}{{ formatAmount(donation.amount / 100) }}</span>
             </div>
-            <div class="flex items-center justify-between p-6 bg-surface-container-lowest rounded-xl">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-brand-lightGreen flex items-center justify-center font-bold text-brand-green">RK</div>
-                <div>
-                  <p class="font-bold text-brand-dark">Robert K.</p>
-                  <p class="text-sm text-brand-gray">"A transparent future for healthcare."</p>
-                </div>
-              </div>
-              <span class="text-lg font-bold text-brand-green">$100.00</span>
-            </div>
+
+            <button
+              v-if="hasMore"
+              @click="handleLoadMoreDonations"
+              :disabled="isLoadingDonations"
+              class="w-full py-4 rounded-xl text-brand-dark font-bold border border-surface-container-high bg-surface-container-lowest hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2"
+            >
+              <i v-if="isLoadingDonations" class="pi pi-spin pi-spinner"></i>
+              <span v-else>Load More</span>
+            </button>
           </div>
         </section>
       </div>
@@ -209,7 +213,7 @@
             <template v-else-if="campaign">
               <div class="flex justify-between items-baseline mb-6">
                 <h2 class="text-4xl font-extrabold text-brand-dark font-headline">
-                  {{ getCurrencySymbol(campaign.currency) }}{{ formatAmount(campaign.collectedInternal || '0') }}
+                  {{ getCurrencySymbol(campaign.currency) }}{{ formatAmount(totalCollected) }}
                 </h2>
                 <span class="text-brand-gray text-sm">
                   of {{ getCurrencySymbol(campaign.currency) }}{{ formatAmount(campaign.goalAmount) }} goal
@@ -294,31 +298,6 @@
                   Share Campaign
                 </button>
               </div>
-
-              <!-- Transparency Mini Card -->
-              <div class="mt-8 p-4 bg-surface-container-low rounded-xl border border-surface-container-high">
-                <p class="text-xs font-bold text-brand-green uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <i class="pi pi-chart-line !text-xs"></i> Transparency Receipt
-                </p>
-                <div class="space-y-1">
-                  <div class="flex justify-between text-xs text-brand-gray">
-                    <span>Materials & Logistics</span>
-                    <span class="font-mono">$0.82</span>
-                  </div>
-                  <div class="flex justify-between text-xs text-brand-gray">
-                    <span>Local Skilled Labor</span>
-                    <span class="font-mono">$0.15</span>
-                  </div>
-                  <div class="flex justify-between text-xs text-brand-gray">
-                    <span>Platform Fee</span>
-                    <span class="font-mono">$0.03</span>
-                  </div>
-                  <div class="border-t border-surface-container-high pt-1 mt-1 flex justify-between text-xs font-bold text-brand-dark">
-                    <span>Total per $1.00</span>
-                    <span class="font-mono">$1.00</span>
-                  </div>
-                </div>
-              </div>
             </template>
           </div>
         </div>
@@ -342,7 +321,7 @@
         <div class="mb-4">
           <label class="text-xs font-bold text-brand-gray uppercase tracking-wider block mb-2">Donation Amount</label>
           <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-brand-gray font-bold">{{ getCurrencySymbol(campaign?.currency) }}</span>
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-brand-gray font-bold">{{ getCurrencySymbol(campaign.currency) }}</span>
             <input
               v-model.number="donationAmount"
               type="number"
@@ -372,7 +351,7 @@
             <i v-if="isProcessingPayment" class="pi pi-spin pi-spinner"></i>
             <template v-else>
               <i class="pi pi-shield"></i>
-              Confirm Payment ({{ getCurrencySymbol(campaign?.currency) }}{{ donationAmount }})
+              Confirm Payment ({{ getCurrencySymbol(campaign.currency) }}{{ donationAmount }})
             </template>
           </button>
           <p class="text-center text-xs text-brand-gray mt-4">
@@ -385,7 +364,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, nextTick, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '../api/axios';
 import { loadStripe, type StripeElements, type StripePaymentElement } from '@stripe/stripe-js';
@@ -425,11 +404,25 @@ interface Campaign {
   category?: Category;
 }
 
+interface Donation {
+  id: string;
+  amount: number;
+  currency: string;
+  donorName: string;
+  createdAt: string;
+}
+
 // ── State ──────────────────────────────────────────────────
 const route = useRoute();
 const toast = useToast();
 const campaign = ref<Campaign | null>(null);
 const isLoading = ref(true);
+const totalCollected = ref<number>(0);
+
+const donations = ref<Donation[]>([]);
+const currentPage = ref(1);
+const hasMore = ref(false);
+const isLoadingDonations = ref(false);
 
 // Payment State
 const isDonating = ref(false); // Used for the initial "Donate Now" button
@@ -461,7 +454,7 @@ const galleryImages = computed(() => {
 
 const progressPercent = computed(() => {
   if (!campaign.value) return 0;
-  const collected = parseFloat(campaign.value.collectedInternal || '0');
+  const collected = totalCollected.value;
   const goal = parseFloat(campaign.value.goalAmount || '1');
   return Math.min(100, Math.round((collected / goal) * 100));
 });
@@ -482,8 +475,9 @@ const daysLeftText = computed(() => {
 // ── Helpers ────────────────────────────────────────────────
 const currencyMap: Record<string, string> = { USD: '$', EUR: '€', UAH: '₴', ETH: 'Ξ', BTC: '₿' };
 
-function getCurrencySymbol(currency: string): string {
-  return currencyMap[currency?.toUpperCase()] || currency || '$';
+function getCurrencySymbol(currency: string | undefined): string {
+  if (!currency) return '$';
+  return currencyMap[currency.toUpperCase()] || currency || '$';
 }
 
 function formatAmount(val: string | number): string {
@@ -494,7 +488,21 @@ function formatAmount(val: string | number): string {
 
 function isMilestoneReached(ms: Milestone): boolean {
   if (!campaign.value) return false;
-  return parseFloat(campaign.value.collectedInternal || '0') >= parseFloat(ms.amount);
+  return totalCollected.value >= parseFloat(ms.amount);
+}
+
+function timeAgo(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} day${days !== 1 ? 's' : ''} ago`;
 }
 
 // ── API ────────────────────────────────────────────────────
@@ -504,11 +512,40 @@ async function fetchCampaign() {
     const id = route.params.id as string;
     const { data } = await api.get(`/campaigns/${id}`);
     campaign.value = data;
+    totalCollected.value = parseFloat(data.collectedInternal || '0');
   } catch (err) {
     console.error('Failed to fetch campaign:', err);
   } finally {
     isLoading.value = false;
   }
+}
+
+async function fetchDonations(loadMore = false) {
+  if (!campaign.value) return;
+  isLoadingDonations.value = true;
+  try {
+    const limit = 5;
+    const offset = (currentPage.value - 1) * limit;
+    const { data } = await api.get(`/campaigns/${campaign.value.id}/donations`, {
+      params: { limit, offset }
+    });
+    
+    if (loadMore) {
+      donations.value = [...donations.value, ...data.donations];
+    } else {
+      donations.value = data.donations;
+    }
+    hasMore.value = data.hasMore;
+  } catch (err) {
+    console.error('Failed to fetch donations:', err);
+  } finally {
+    isLoadingDonations.value = false;
+  }
+}
+
+function handleLoadMoreDonations() {
+  currentPage.value++;
+  fetchDonations(true);
 }
 
 async function handleStripeDonate() {
@@ -636,9 +673,68 @@ function handleShare() {
   }
 }
 
+async function getDataFromMonobankJar() {
+  if(!campaign.value?.monoJarUrl) return;
+
+  const jarId = campaign.value.monoJarUrl.split('/').pop();
+  if(!jarId) return;
+
+  try {
+    const response = await api.get(`/payments/mono-status/${jarId}`);
+    const { jarAmount, currency, rate } = response.data;
+    
+    const amount = Number(jarAmount) / 100;
+    
+    let mappedCurrency = '';
+    if (currency == 980) mappedCurrency = 'UAH';
+    else if (currency == 840) mappedCurrency = 'USD';
+    else if (currency == 978) mappedCurrency = 'EUR';
+
+    let convertedJar = amount;
+    const campaignCurrency = campaign.value.currency?.toUpperCase() || 'USD';
+
+    if (mappedCurrency && mappedCurrency !== campaignCurrency && rate) {
+      if (mappedCurrency === 'UAH' && campaignCurrency === 'USD') {
+        convertedJar = amount / rate.usd.sale;
+      } else if (mappedCurrency === 'USD' && campaignCurrency === 'UAH') {
+        convertedJar = amount * rate.usd.buy;
+      } else if (mappedCurrency === 'UAH' && campaignCurrency === 'EUR') {
+        convertedJar = amount / rate.eur.sale;
+      } else if (mappedCurrency === 'EUR' && campaignCurrency === 'UAH') {
+        convertedJar = amount * rate.eur.buy;
+      } else if (mappedCurrency === 'USD' && campaignCurrency === 'EUR') {
+        convertedJar = (amount * rate.usd.buy) / rate.eur.sale;
+      } else if (mappedCurrency === 'EUR' && campaignCurrency === 'USD') {
+        convertedJar = (amount * rate.eur.buy) / rate.usd.sale;
+      }
+    }
+
+    totalCollected.value = Number(campaign.value.collectedInternal || '0') + convertedJar;
+  } catch (error) {
+    console.error('Failed to get Monobank jar data:', error);
+  }
+}
+
+watch(totalCollected, async (newTotal) => {
+  if (!campaign.value) return;
+  const goal = parseFloat(campaign.value.goalAmount || '0');
+  if (newTotal >= goal && campaign.value.status !== 'completed') {
+    try {
+      await api.post(`/campaigns/${campaign.value.id}/complete`);
+      campaign.value.status = 'completed';
+    } catch (err) {
+      console.error('Failed to complete campaign:', err);
+    }
+  }
+});
+
 // ── Lifecycle ──────────────────────────────────────────────
-onMounted(() => {
-  fetchCampaign();
+onMounted(async () => {
+  await fetchCampaign();
+  await getDataFromMonobankJar();
+  if (campaign.value) {
+    await fetchDonations();
+  }
 });
 </script>
 
