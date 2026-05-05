@@ -10,7 +10,7 @@
           </div>
           <!-- Navigation Links (Desktop) -->
           <nav class="hidden md:flex space-x-8">
-            <router-link to="/explore" class="text-brand-dark font-medium border-b-2 border-brand-green py-5 px-4">Explore</router-link>
+            <router-link :to="{ name: 'campaigns' }" class="text-brand-dark font-medium border-b-2 border-brand-green py-5 px-4">Explore</router-link>
             <a class="text-brand-gray hover:text-brand-dark font-medium px-1 py-5 transition-colors" href="#">Impact</a>
             <a class="text-brand-gray hover:text-brand-dark font-medium px-1 py-5 transition-colors" href="#">Transparency</a>
           </nav>

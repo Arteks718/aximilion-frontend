@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import AuthView from '../views/AuthView.vue'
 import CreateCampaignView from '../views/CreateCampaignView.vue'
+import ExploreView from '../views/ExploreView.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -17,6 +18,11 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: HomeView
+        },
+        {
+          path: 'campaigns',
+          name: 'campaigns',
+          component: ExploreView
         },
         {
           path: 'login',
