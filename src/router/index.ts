@@ -8,6 +8,7 @@ import ExploreView from '../views/ExploreView.vue'
 import { useAuthStore } from '../stores/auth'
 import CampaignDetailsView from '../views/CampaignDetailsView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import MyCampaignsView from '../views/MyCampaignsView.vue'
 import UserLayout from '../layouts/UserLayout.vue'
 
 const router = createRouter({
@@ -72,6 +73,11 @@ const router = createRouter({
               name: 'profile',
               component: ProfileView
             },
+            {
+              path: 'campaigns',
+              name: 'my-campaigns',
+              component: MyCampaignsView
+            }
           ]
         }
       ]
