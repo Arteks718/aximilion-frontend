@@ -304,9 +304,6 @@
       </aside>
     </div>
 
-    <!-- Donation Success Toast -->
-    <Toast />
-
     <!-- Stripe Donation Dialog -->
     <Dialog
       v-model:visible="isStripeDialogOpen"

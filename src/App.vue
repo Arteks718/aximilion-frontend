@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useAuthStore } from './stores/auth';
+import Toast from 'primevue/toast';
 
-const authStore = useAuthStore();
-
-onMounted(async () => {
-  await authStore.initialize();
-});
 </script>
 
 <template>
+  <Toast />
   <router-view />
 </template>
