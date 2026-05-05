@@ -130,7 +130,6 @@
                 <div class="flex items-center gap-4 text-xs text-brand-gray font-medium">
                   <span>Target: {{ currencySymbol(campaign) }}{{ formatAmount(campaign.goalAmount) }}</span>
                   <span class="flex items-center gap-1"><i class="pi pi-clock text-[10px]"></i> {{ getDaysLeft(campaign) }}</span>
-                  <span class="flex items-center gap-1"><i class="pi pi-users text-[10px]"></i> {{ campaign.donorsCount || 0 }} Donors</span>
                 </div>
                 <button class="bg-[#006C49] text-surface-container-lowest px-6 py-2 rounded-full text-sm font-medium hover:bg-[#005236] transition-colors flex items-center gap-2">
                   Donate <i class="pi pi-arrow-right text-white text-sm"></i>
@@ -194,7 +193,6 @@
                   <ProgressBar :value="progressPercent(campaign)" :showValue="false" class="h-1.5 mb-3" />
                   <div class="flex items-center gap-4 text-xs text-brand-gray font-medium">
                     <span class="flex items-center gap-1"><i class="pi pi-target text-[10px]"></i> {{ currencySymbol(campaign) }}{{ formatAmount(campaign.collectedInternal || 0) }} raised</span>
-                    <span class="flex items-center gap-1"><i class="pi pi-users text-[10px]"></i> {{ campaign.donorsCount || 0 }} Donors</span>
                   </div>
                 </div>
               </div>
