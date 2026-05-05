@@ -273,6 +273,7 @@ import RadioButton from 'primevue/radiobutton'
 import ProgressBar from 'primevue/progressbar'
 import Paginator from 'primevue/paginator'
 import Skeleton from 'primevue/skeleton'
+import { getCurrencySymbol } from '../helpers'
 
 // ── Types ──────────────────────────────────────────────────
 interface CampaignImage { url: string; type: string }
@@ -329,19 +330,6 @@ const sortOptions = [
   { label: 'Most Funded', value: 'funded' },
   { label: 'Ending Soon', value: 'ending' },
 ]
-
-// ── Helpers ────────────────────────────────────────────────
-const currencyMap: Record<string, string> = {
-  USD: '$',
-  EUR: '€',
-  UAH: '₴',
-  ETH: 'Ξ',
-  BTC: '₿'
-}
-
-function getCurrencySymbol(currency: string): string {
-  return currencyMap[currency.toUpperCase()] || currency || '$'
-}
 
 function getCoverImage(campaign: Campaign): string {
   if (!campaign.images) return ''

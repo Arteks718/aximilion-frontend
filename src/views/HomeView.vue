@@ -374,6 +374,7 @@ import api from '../api/axios';
 // PrimeVue components
 import ProgressBar from 'primevue/progressbar';
 import Skeleton from 'primevue/skeleton';
+import { currencyMap, getCurrencySymbol } from '../helpers';
 
 const router = useRouter();
 
@@ -428,9 +429,6 @@ const isLoadingDonations = ref(true);
 const platformStats = ref<PlatformStats>({ totalDonors: 0, activeCampaigns: 0, totalFundsRaised: 0 });
 const isLoadingStats = ref(true);
 
-// --- Helpers ---
-const currencySymbolMap: Record<string, string> = { USD: '$', EUR: '€', UAH: '₴' };
-
 function getCoverImage(campaign: any): string {
   if (campaign.image) return campaign.image; // fallback data
   const imgs = campaign.images as CampaignImage[] | null;
@@ -438,13 +436,8 @@ function getCoverImage(campaign: any): string {
   return cover?.url || '';
 }
 
-function getCurrencySymbol(currency: string | undefined): string {
-  if (!currency) return '$';
-  return currencySymbolMap[currency.toUpperCase()] || currency || '$';
-}
-
 function currencySymbol(c: any): string {
-  return currencySymbolMap[c?.currency] || '$';
+  return currencyMap[c?.currency] || '$';
 }
 
 function formatAmount(val: string | number): string {

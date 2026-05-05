@@ -362,7 +362,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import api from '../api/axios';
 import { loadStripe, type StripeElements, type StripePaymentElement } from '@stripe/stripe-js';
 
@@ -374,6 +374,7 @@ import Dialog from 'primevue/dialog';
 import ProgressSpinner from 'primevue/progressspinner';
 import { useToast } from 'primevue/usetoast';
 import { useAuthStore } from '../stores/auth';
+import { getCurrencySymbol } from '../helpers';
 
 // Initialize Stripe outside component
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -410,9 +411,8 @@ interface Donation {
 }
 
 const authStore = useAuthStore();
-
-// ── State ──────────────────────────────────────────────────
 const route = useRoute();
+const router = useRouter();
 const toast = useToast();
 const campaign = ref<Campaign | null>(null);
 const isLoading = ref(true);
@@ -471,14 +471,6 @@ const daysLeftText = computed(() => {
   return `${daysLeftValue.value} Days Left`;
 });
 
-// ── Helpers ────────────────────────────────────────────────
-const currencyMap: Record<string, string> = { USD: '$', EUR: '€', UAH: '₴', ETH: 'Ξ', BTC: '₿' };
-
-function getCurrencySymbol(currency: string | undefined): string {
-  if (!currency) return '$';
-  return currencyMap[currency.toUpperCase()] || currency || '$';
-}
-
 function formatAmount(val: string | number): string {
   const n = typeof val === 'string' ? parseFloat(val) : val;
   if (!n || isNaN(n)) return '0';
@@ -510,10 +502,20 @@ async function fetchCampaign() {
   try {
     const id = route.params.id as string;
     const { data } = await api.get(`/campaigns/${id}`);
+    
+    // Explicitly check if campaign is pending and user is not a moderator (fallback check)
+    if (data.status === 'pending' && authStore.user?.role !== 'moderator') {
+      router.push({ name: 'not-found' });
+      return;
+    }
+    
     campaign.value = data;
     totalCollected.value = parseFloat(data.collectedInternal || '0');
-  } catch (err) {
+  } catch (err: any) {
     console.error('Failed to fetch campaign:', err);
+    if (err.response?.status === 404) {
+      router.push({ name: 'not-found' });
+    }
   } finally {
     isLoading.value = false;
   }

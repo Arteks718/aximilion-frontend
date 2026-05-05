@@ -290,19 +290,14 @@ const { value: description } = useField<string>('description');
 const { value: goalAmount } = useField<number>('goalAmount');
 
 // --- Non-validated fields ---
-const logistics = ref('');
 const monoJarUrl = ref('');
 const currency = ref('USD');
 const isSubmitting = ref(false);
 
 // --- Currency Symbol ---
-const currencySymbolMap: Record<string, string> = {
-  USD: '$',
-  EUR: '€',
-  UAH: '₴',
-};
+import { getCurrencySymbol } from '../helpers';
 
-const currencySymbol = computed(() => currencySymbolMap[currency.value] || '$');
+const currencySymbol = computed(() => getCurrencySymbol(currency.value));
 
 // --- Milestones ---
 const milestones = reactive<{ title: string; amount: number | null }[]>([
