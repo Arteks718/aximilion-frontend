@@ -1,29 +1,5 @@
 <template>
-  <div class="flex-grow flex w-full max-w-7xl mx-auto px-4 md:px-8 py-8 gap-8 font-sans">
-    <!-- Sidebar Navigation -->
-    <aside class="hidden md:flex flex-col w-64 flex-shrink-0 gap-2">
-      <div class="mb-6 px-4">
-        <h2 class="font-headline text-2xl font-bold tracking-tight text-brand-dark">Settings</h2>
-        <p class="text-sm text-brand-gray mt-1">Manage your account preferences.</p>
-      </div>
-      <nav class="flex flex-col gap-1">
-        <router-link to="/profile" class="flex items-center gap-3 px-4 py-3 bg-white text-brand-green font-bold rounded-lg shadow-sm">
-          <i class="pi pi-user"></i>
-          <span class="text-md">Profile</span>
-        </router-link>
-        <router-link to="/dashboard" class="flex items-center gap-3 px-4 py-3 text-brand-gray hover:text-brand-green hover:bg-surface-container-low rounded-lg transition-all hover:translate-x-1 duration-300">
-          <i class="pi pi-chart-line"></i>
-          <span class="text-md">Dashboard</span>
-        </router-link>
-        <router-link to="/dashboard" class="flex items-center gap-3 px-4 py-3 text-brand-gray hover:text-brand-green hover:bg-surface-container-low rounded-lg transition-all hover:translate-x-1 duration-300">
-          <i class="pi pi-megaphone"></i>
-          <span class="text-md">My campaigns</span>
-        </router-link>
-      </nav>
-    </aside>
-
-    <!-- Right Content Area -->
-    <div class="flex-grow flex flex-col gap-8 max-w-3xl">
+    <div class="flex flex-col gap-8 w-full max-w-3xl mx-auto">
       <div class="md:hidden mb-4">
         <h1 class="font-headline text-3xl font-bold tracking-tight text-brand-dark">Profile Settings</h1>
       </div>
@@ -109,7 +85,6 @@
         </form>
       </section>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">

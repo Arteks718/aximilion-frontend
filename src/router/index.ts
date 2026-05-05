@@ -8,6 +8,7 @@ import ExploreView from '../views/ExploreView.vue'
 import { useAuthStore } from '../stores/auth'
 import CampaignDetailsView from '../views/CampaignDetailsView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import UserLayout from '../layouts/UserLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,22 +52,27 @@ const router = createRouter({
           component: AuthView
         },
         {
-          path: 'dashboard',
-          name: 'dashboard',
-          component: DashboardView,
-          meta: { auth: true }
-        },
-        {
           path: 'create-campaign',
           name: 'create-campaign',
           component: CreateCampaignView,
           meta: { auth: true }
         },
         {
-          path: 'profile',
-          name: 'profile',
-          component: ProfileView,
-          meta: { auth: true }
+          path: 'me',
+          component: UserLayout,
+          meta: { auth: true },
+          children: [
+            {
+              path: 'dashboard',
+              name: 'dashboard',
+              component: DashboardView
+            },
+            {
+              path: 'profile',
+              name: 'profile',
+              component: ProfileView
+            },
+          ]
         }
       ]
     }

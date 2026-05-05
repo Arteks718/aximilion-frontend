@@ -1,30 +1,5 @@
 <template>
-  <div class="flex-grow flex w-full max-w-7xl mx-auto px-4 md:px-8 py-8 gap-8 font-sans">
-    <!-- Sidebar Navigation -->
-    <aside class="hidden md:flex flex-col w-64 flex-shrink-0 gap-2">
-      <div class="mb-6 px-4">
-        <h2 class="font-headline text-2xl font-bold tracking-tight text-gray-900">Dashboard</h2>
-        <p class="text-sm text-gray-500 mt-1">Your impact overview.</p>
-      </div>
-      <nav class="flex flex-col gap-1">
-        <router-link to="/profile" class="flex items-center gap-3 px-4 py-3 text-gray-500 hover:text-[#006C49] hover:bg-gray-50 rounded-lg transition-all hover:translate-x-1 duration-300">
-          <i class="pi pi-user"></i>
-          <span class="text-md font-medium">Profile</span>
-        </router-link>
-        <router-link to="/dashboard" class="flex items-center gap-3 px-4 py-3 bg-white text-[#006C49] font-bold rounded-lg shadow-sm border border-gray-100">
-          <i class="pi pi-chart-line"></i>
-          <span class="text-md">Dashboard</span>
-        </router-link>
-        <router-link to="/dashboard" class="flex items-center gap-3 px-4 py-3 text-gray-500 hover:text-[#006C49] hover:bg-gray-50 rounded-lg transition-all hover:translate-x-1 duration-300">
-          <i class="pi pi-megaphone"></i>
-          <span class="text-md font-medium">My campaigns</span>
-        </router-link>
-      </nav>
-    </aside>
-
-    <!-- Right Content Area -->
-    <div class="flex-grow flex flex-col gap-8 w-full overflow-hidden">
-      <header class="mb-2">
+  <header class="mb-2">
         <h2 class="font-headline text-3xl font-extrabold tracking-tight text-gray-900 mb-2">Welcome back, {{ userName }}.</h2>
         <p class="text-gray-500 text-sm">Your impact overview for this quarter.</p>
       </header>
@@ -183,8 +158,6 @@
           </div>
         </section>
       </div>
-    </div>
-  </div>
 
   <!-- Badge Details Modal -->
   <Dialog v-model:visible="showBadgeDialog" modal :header="selectedBadge?.name?.replace('<br/>', ' ')" :style="{ width: '25rem' }" :dismissableMask="true">
