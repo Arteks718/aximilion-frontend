@@ -113,7 +113,7 @@
                 <span class="text-xs font-medium text-brand-gray uppercase tracking-wider">{{ getCategoryName(campaign.categoryId) }}</span>
               </div>
               <h3 class="text-xl font-bold text-brand-dark mb-2 font-headline group-hover:text-brand-green">{{ campaign.title }}</h3>
-              <p class="text-sm text-brand-gray line-clamp-2 mb-4">
+              <p class="text-sm text-brand-gray line-clamp-2 mb-4 break-all">
                 {{ campaign.description }}
               </p>
             </div>
@@ -207,21 +207,43 @@
           <h2 class="text-2xl font-bold text-brand-dark mb-6 font-headline">Latest Donations</h2>
           <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_4px_24px_rgba(22,28,34,0.04)]">
             <ul class="flex flex-col gap-6 max-h-[460px] overflow-y-auto pr-2 custom-scrollbar">
-              <li class="flex items-center justify-between" v-for="n in 5" :key="n">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-brand-lightGreen flex items-center justify-center text-brand-green">
-                    <i class="pi pi-user"></i>
+              <template v-if="isLoadingDonations">
+                <li class="flex items-center justify-between" v-for="n in 5" :key="'skel-' + n">
+                  <div class="flex items-center gap-3">
+                    <Skeleton shape="circle" width="2.5rem" height="2.5rem" />
+                    <div>
+                      <Skeleton width="6rem" height="1rem" class="mb-1" />
+                      <Skeleton width="4rem" height="0.75rem" />
+                    </div>
                   </div>
-                  <div>
-                    <p class="text-sm font-semibold text-brand-dark">Donor Name</p>
-                    <p class="text-xs text-brand-gray">Just now</p>
+                  <div class="text-right flex flex-col items-end">
+                    <Skeleton width="3rem" height="1rem" class="mb-1" />
+                    <Skeleton width="4rem" height="0.75rem" />
                   </div>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm font-bold text-brand-dark">${{ Math.floor(Math.random() * 50) + 10 }}.00</p>
-                  <p class="text-xs text-brand-gray">Status: OK</p>
-                </div>
-              </li>
+                </li>
+              </template>
+              <template v-else-if="latestDonations.length > 0">
+                <li class="flex items-center justify-between" v-for="donation in latestDonations" :key="donation.id">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold"
+                         :class="donation.donorName === 'Anonymous' ? 'bg-surface-container-high text-brand-gray' : 'bg-brand-lightGreen text-brand-green'">
+                      <i v-if="donation.donorName === 'Anonymous'" class="pi pi-user"></i>
+                      <span v-else>{{ donation.donorName.substring(0, 2).toUpperCase() }}</span>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-brand-dark">{{ donation.donorName }}</p>
+                      <p class="text-xs text-brand-gray">{{ timeAgo(donation.createdAt) }}</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-bold text-brand-dark">{{ getCurrencySymbol(donation.currency) }}{{ formatAmount(donation.amount / 100) }}</p>
+                    <p class="text-xs text-brand-green font-medium">Status: OK</p>
+                  </div>
+                </li>
+              </template>
+              <template v-else>
+                <li class="text-center py-8 text-brand-gray text-sm">No donations yet.</li>
+              </template>
             </ul>
           </div>
         </div>
@@ -377,6 +399,13 @@ interface Category {
   name: string;
   iconPrefix: string;
 }
+interface Donation {
+  id: string;
+  amount: number;
+  currency: string;
+  donorName: string;
+  createdAt: string;
+}
 
 const DEFAULT_CATEGORY_ID = 'All'
 
@@ -389,6 +418,9 @@ const categories = ref<Category[]>([
   { id: DEFAULT_CATEGORY_ID, name: 'All', iconPrefix: 'pi pi-globe' }
 ]);
 
+const latestDonations = ref<Donation[]>([]);
+const isLoadingDonations = ref(true);
+
 // --- Helpers ---
 const currencySymbolMap: Record<string, string> = { USD: '$', EUR: '€', UAH: '₴' };
 
@@ -397,6 +429,11 @@ function getCoverImage(campaign: any): string {
   const imgs = campaign.images as CampaignImage[] | null;
   const cover = imgs?.find((i) => i.type === 'cover');
   return cover?.url || '';
+}
+
+function getCurrencySymbol(currency: string | undefined): string {
+  if (!currency) return '$';
+  return currencySymbolMap[currency.toUpperCase()] || currency || '$';
 }
 
 function currencySymbol(c: any): string {
@@ -429,6 +466,20 @@ function getCategoryName(categoryId: string): string {
   return cat ? cat.name : 'General';
 }
 
+function timeAgo(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} day${days !== 1 ? 's' : ''} ago`;
+}
+
 // --- Fetch ---
 async function fetchCampaigns() {
   isLoading.value = true;
@@ -456,6 +507,18 @@ async function fetchCategories() {
   }
 }
 
+async function fetchLatestDonations() {
+  isLoadingDonations.value = true;
+  try {
+    const { data } = await api.get('/donations/latest');
+    latestDonations.value = data;
+  } catch (err) {
+    console.error('Failed to fetch latest donations:', err);
+  } finally {
+    isLoadingDonations.value = false;
+  }
+}
+
 function handleCategoryClick(catId: string) {
   if(selectedCategory.value === catId) return;
   selectedCategory.value = catId;
@@ -470,6 +533,7 @@ onMounted(async () => {
   statsStore.fetchStats();
   await fetchCampaigns();
   await fetchCategories();
+  await fetchLatestDonations();
 });
 
 const allCampaigns = computed(() => campaigns.value.length > 0 ? campaigns.value : []);
