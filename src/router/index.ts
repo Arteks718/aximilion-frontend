@@ -7,6 +7,7 @@ import CreateCampaignView from '../views/CreateCampaignView.vue'
 import ExploreView from '../views/ExploreView.vue'
 import { useAuthStore } from '../stores/auth'
 import CampaignDetailsView from '../views/CampaignDetailsView.vue'
+import ProfileView from '../views/ProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,12 @@ const router = createRouter({
           path: 'create-campaign',
           name: 'create-campaign',
           component: CreateCampaignView,
+          meta: { auth: true }
+        },
+        {
+          path: 'profile',
+          name: 'profile',
+          component: ProfileView,
           meta: { auth: true }
         }
       ]

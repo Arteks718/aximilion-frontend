@@ -19,6 +19,7 @@ export const useAuthStore = defineStore('auth', {
       this.session = data.session;
 
       try {
+        console.log('Syncing user on initialize...');
         const response = await api.post('/auth/sync');
         // Overwrite user with the local DB record (includes role, id, etc.)
         this.user = response.data;
@@ -31,6 +32,21 @@ export const useAuthStore = defineStore('auth', {
       });
 
       this.isInitialized = true;
+    },
+
+    async refreshSession() {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error) throw error;
+      this.session = data.session;
+      this.user = data.user;
+
+      try {
+        const response = await api.post('/auth/sync');
+        // Overwrite user with the local DB record (includes role, id, etc.)
+        this.user = response.data;
+      } catch (err) {
+        console.error('Failed to sync user on refresh:', err);
+      }
     },
 
     async login(credentials: any) {
