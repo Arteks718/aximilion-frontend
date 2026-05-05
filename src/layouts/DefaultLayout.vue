@@ -64,8 +64,11 @@
               <router-link :to="{name: 'register'}" class="bg-[#006C49] text-surface-container-lowest px-4 py-2 rounded-full font-medium text-sm hover:bg-[#005236] transition-colors shadow-sm">Sign Up</router-link>
             </template>
             <template v-else>
-              <div class="relative flex items-center">
-                <button @click="toggleMenu" aria-haspopup="true" aria-controls="user_menu" class="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-brand-lightGreen text-brand-green hover:ring-2 hover:ring-brand-green transition-all shadow-sm">
+              <div class="relative flex items-center gap-4">
+                <router-link v-if="authStore.user?.role === 'moderator'" to="/moderator/dashboard" class="text-xs font-bold text-[#006C49] hover:text-[#005236] transition-colors flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-full">
+                  <i class="pi pi-shield"></i> Mod Dashboard
+                </router-link>
+                <button @click="toggleMenu" aria-haspopup="true" aria-controls="user_menu" class="w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center font-bold bg-brand-lightGreen text-brand-green hover:ring-2 hover:ring-brand-green transition-all shadow-sm">
                   {{ userInitials }}
                 </button>
                 <Menu ref="menu" id="user_menu" :model="menuItems" :popup="true" class="mt-2 w-48" />

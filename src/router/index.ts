@@ -79,6 +79,12 @@ const router = createRouter({
               component: MyCampaignsView
             }
           ]
+        },
+        {
+          path: 'moderator/dashboard',
+          name: 'moderator-dashboard',
+          component: () => import('../views/ModeratorDashboardView.vue'),
+          meta: { auth: true, moderatorOnly: true }
         }
       ]
     },
@@ -98,10 +104,12 @@ router.beforeEach(async (to) => {
     await authStore.initialize()
   }
 
-  console.log('router')
-
   if (to.meta.auth && !authStore.isAuthenticated) {
     return { name: 'login' }
+  }
+
+  if (to.meta.moderatorOnly && authStore.user?.role !== 'moderator') {
+    return { name: 'not-found' }
   }
 })
 
