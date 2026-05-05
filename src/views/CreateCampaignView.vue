@@ -241,10 +241,6 @@
 
       <!-- Actions Footer -->
       <footer class="pt-12 flex flex-col md:flex-row gap-4 items-center justify-end">
-        <button type="button"
-          class="w-full md:w-auto px-10 py-4 rounded-full font-bold text-brand-gray hover:bg-surface-container-low transition-colors">
-          Save Draft
-        </button>
         <button type="submit" :disabled="isSubmitting"
           class="w-full md:w-auto px-12 py-4 rounded-full bg-primary text-white font-extrabold text-lg shadow-[0_8px_40px_rgba(0,108,73,0.2)] hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isSubmitting ? 'Launching...' : 'Launch Campaign' }}
