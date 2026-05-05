@@ -96,7 +96,7 @@
         <!-- Real Cards -->
         <article 
           v-else-if="verifiedCampaigns.length > 0"
-          v-for="(campaign, index) in verifiedCampaigns" 
+          v-for="campaign in verifiedCampaigns" 
           :key="campaign.id" 
           @click="navigateToDetail(campaign.id)"
           class="bg-surface-container-lowest rounded-2xl p-4 flex flex-col md:flex-row gap-6 shadow-[0_4px_24px_rgba(22,28,34,0.04)] hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-all cursor-pointer"
@@ -378,13 +378,15 @@ interface Category {
   iconPrefix: string;
 }
 
+const DEFAULT_CATEGORY_ID = 'All'
+
 // --- State ---
 const campaigns = ref<Campaign[]>([]);
 const isLoading = ref(true);
-const selectedCategory = ref('All');
+const selectedCategory = ref(DEFAULT_CATEGORY_ID);
 
 const categories = ref<Category[]>([
-  { id: 'All', name: 'All', iconPrefix: 'pi pi-globe' }
+  { id: DEFAULT_CATEGORY_ID, name: 'All', iconPrefix: 'pi pi-globe' }
 ]);
 
 // --- Helpers ---
@@ -432,7 +434,7 @@ async function fetchCampaigns() {
   isLoading.value = true;
   try {
     const params: any = {};
-    if (selectedCategory.value !== 'All') {
+    if (selectedCategory.value !== DEFAULT_CATEGORY_ID) {
       params.category = selectedCategory.value;
     }
     const { data: response } = await api.get('/campaigns', { params });
