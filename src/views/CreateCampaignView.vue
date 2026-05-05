@@ -48,14 +48,6 @@
               placeholder="Tell your story... What drives this change?" rows="6"></textarea>
           </div>
           <p v-if="errors.description" class="text-red-500 text-xs -mt-4">{{ errors.description }}</p>
-
-          <div class="space-y-2">
-            <label class="text-xs uppercase tracking-widest font-bold text-brand-gray">Logistics &amp; Outcomes</label>
-            <textarea v-model="logistics"
-              class="w-full bg-surface-container-lowest rounded-2xl p-6 text-brand-dark placeholder:text-brand-gray/50 focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary transition-colors"
-              placeholder="Detailed breakdown of how the funds will be utilized and specific impact metrics."
-              rows="4"></textarea>
-          </div>
         </div>
       </section>
 

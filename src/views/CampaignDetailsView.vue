@@ -37,25 +37,6 @@
       <!-- ── Left: Main Content ── -->
       <div class="lg:col-span-8 space-y-16">
 
-        <!-- Impact Metrics -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" v-if="!isLoading">
-          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
-            <i class="pi pi-heart text-brand-green text-xl mb-4 block"></i>
-            <h3 class="text-3xl font-bold text-brand-dark font-headline">5,000+</h3>
-            <p class="text-brand-gray text-sm">Expected Lives Saved</p>
-          </div>
-          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
-            <i class="pi pi-briefcase text-brand-green text-xl mb-4 block"></i>
-            <h3 class="text-3xl font-bold text-brand-dark font-headline">120</h3>
-            <p class="text-brand-gray text-sm">Local Jobs Created</p>
-          </div>
-          <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
-            <i class="pi pi-verified text-brand-green text-xl mb-4 block"></i>
-            <h3 class="text-3xl font-bold text-brand-dark font-headline">100%</h3>
-            <p class="text-brand-gray text-sm">Blockchain Verified</p>
-          </div>
-        </div>
-
         <!-- Skeleton for metrics -->
         <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div v-for="n in 3" :key="'m-skel-'+n" class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
