@@ -372,8 +372,8 @@ import Skeleton from 'primevue/skeleton';
 import { Image } from 'primevue';
 import Dialog from 'primevue/dialog';
 import ProgressSpinner from 'primevue/progressspinner';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useAuthStore } from '../stores/auth';
 
 // Initialize Stripe outside component
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -408,6 +408,8 @@ interface Donation {
   donorName: string;
   createdAt: string;
 }
+
+const authStore = useAuthStore();
 
 // ── State ──────────────────────────────────────────────────
 const route = useRoute();
@@ -562,6 +564,7 @@ async function initStripe() {
       campaignId: campaign.value.id,
       amount: donationAmount.value, // raw amount, backend handles cents
       currency: campaign.value.currency?.toLowerCase() || 'usd',
+      userId: authStore.user?.supabaseUid || null,
     });
 
     clientSecret.value = data.clientSecret;
