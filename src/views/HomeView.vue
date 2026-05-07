@@ -304,65 +304,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Latest News & Impact Stories -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-      <h2 class="text-2xl font-bold text-brand-dark mb-6 font-headline">Latest News & Impact Stories</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Story 1 -->
-        <article class="bg-surface-container-lowest rounded-2xl shadow-[0_4px_24px_rgba(22,28,34,0.04)] overflow-hidden flex flex-col group hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-shadow">
-          <div class="aspect-video w-full relative overflow-hidden bg-surface-container-low">
-            <img alt="Clean Water Project" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/ADBb0ujQZjr5XmVyOo1fQIb3kdDhNJdWp4Uex7EVoroEqneJWRTk1LoETeN37I71T3-GLjvmpd_CC2qRuK3AtobDHSm6apqI1I2Cae9JKccjrYyrTUq4QM7XSIskA5ni-eHujAgbdRaM5AZE6a73c-VDBS-RxzyLEmjW1ip7x0pa7JIe0smJklQ16smzpt_8taStcfFDlfg_v0bRUg9jjHeFk3smdUkO6Iwd2QylGCBABRyFYInku37flgEn4A" />
-            <span class="absolute top-3 left-3 bg-brand-green/90 text-surface-container-lowest text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">Success Story</span>
-          </div>
-          <div class="p-6 flex flex-col flex-1">
-            <span class="text-xs font-bold text-brand-gray uppercase tracking-wider mb-2">Medical</span>
-            <h3 class="text-lg font-bold text-brand-dark mb-3 line-clamp-2 font-headline">Clean Water Project in Kenya Completed Ahead of Schedule</h3>
-            <p class="text-sm text-brand-gray mb-4 flex-1 line-clamp-3">
-              Thanks to your support, over 5,000 residents now have access to clean, safe drinking water.
-            </p>
-            <a class="text-brand-green font-semibold text-sm flex items-center gap-1 hover:text-emerald-700 transition-colors mt-auto" href="#">
-              Read More <i class="pi pi-arrow-right text-xs"></i>
-            </a>
-          </div>
-        </article>
-        <!-- Story 2 -->
-        <article class="bg-surface-container-lowest rounded-2xl shadow-[0_4px_24px_rgba(22,28,34,0.04)] overflow-hidden flex flex-col group hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-shadow">
-          <div class="aspect-video w-full relative overflow-hidden bg-surface-container-low">
-            <img alt="Quarterly Transparency Report" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/ADBb0ujFLht6wMcAO_A3emIvMv1CB1VPVXkqyuVwHusF7nHIKfr967_ua2LFpF6VqKo5a6RJzRyooAI8pEcOYJ-Ac4c8TKHW-7aPs_qkqiEGSGrYO1EfIjT45wHTTLb0t0XsYu4I80b_kFnC8dKsmNP8xnWCH1qLQLcSkX_jjCxEvVtx24D9Rb3_t14gCJ8JZekHLAXh0wDQ1VZEEJHb-PipyGZ-mG3XJsMjmlFYWEhKCTGooS59giM_rHPRzAY" />
-            <span class="absolute top-3 left-3 bg-blue-500/90 text-surface-container-lowest text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">Update</span>
-          </div>
-          <div class="p-6 flex flex-col flex-1">
-            <span class="text-xs font-bold text-brand-gray uppercase tracking-wider mb-2">Update</span>
-            <h3 class="text-lg font-bold text-brand-dark mb-3 line-clamp-2 font-headline">Quarterly Transparency Report: Q2 2024</h3>
-            <p class="text-sm text-brand-gray mb-4 flex-1 line-clamp-3">
-              Dive into our detailed financial breakdown and impact metrics for the second quarter.
-            </p>
-            <a class="text-brand-green font-semibold text-sm flex items-center gap-1 hover:text-emerald-700 transition-colors mt-auto" href="#">
-              Read More <i class="pi pi-arrow-right text-xs"></i>
-            </a>
-          </div>
-        </article>
-        <!-- Story 3 -->
-        <article class="bg-surface-container-lowest rounded-2xl shadow-[0_4px_24px_rgba(22,28,34,0.04)] overflow-hidden flex flex-col group hover:shadow-[0_8px_40px_rgba(22,28,34,0.08)] transition-shadow">
-          <div class="aspect-video w-full relative overflow-hidden bg-surface-container-low">
-            <img alt="Maria's Education Fund" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/ADBb0ugf-qsEkVBgVAxyuj3KbIgxXHPiBVjQRSjitMLdTXKq8IplaPwkPG7JorQPOtx_AsLqrQnWlnPB8VNcx5h-tvyY6mj3Zv5-BgAPO6ji8y9fRZ-zIJBt0ceN5q1QSEbnRUel0A5Q8iq2ox_UR5ekG7rszXZxA23InR1BEWc3Dz1aqIy0P4bapTmSyTe6hIoj236tGE0QU-cTsyNZNu02mzJuIhDxaBXxCsUFGmZoIz-ifLvT4QGAPfq0cQ" />
-            <span class="absolute top-3 left-3 bg-purple-500/90 text-surface-container-lowest text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">Impact Story</span>
-          </div>
-          <div class="p-6 flex flex-col flex-1">
-            <span class="text-xs font-bold text-brand-gray uppercase tracking-wider mb-2">Impact Story</span>
-            <h3 class="text-lg font-bold text-brand-dark mb-3 line-clamp-2 font-headline">How Maria's Education Fund Changed Her Life</h3>
-            <p class="text-sm text-brand-gray mb-4 flex-1 line-clamp-3">
-              Read about how a scholarship from the "Future Leaders" campaign empowered Maria to pursue her dreams.
-            </p>
-            <a class="text-brand-green font-semibold text-sm flex items-center gap-1 hover:text-emerald-700 transition-colors mt-auto" href="#">
-              Read More <i class="pi pi-arrow-right text-xs"></i>
-            </a>
-          </div>
-        </article>
-      </div>
-    </section>
-
   </div>
 </template>
 
