@@ -50,7 +50,7 @@
         <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div class="flex justify-between items-center mb-6">
             <h3 class="font-headline text-xl font-bold text-gray-900">My Badges</h3>
-            <a class="text-sm text-[#006C49] hover:text-[#005236] transition-colors font-bold" href="#">View All</a>
+            <button @click="openAllBadges" class="text-sm text-[#006C49] hover:text-[#005236] transition-colors font-bold">View All</button>
           </div>
           <div v-if="loadingStats" class="grid grid-cols-3 md:grid-cols-5 gap-4">
              <div v-for="n in 5" :key="'skel-badge-'+n" class="flex flex-col items-center text-center gap-2">
@@ -103,7 +103,6 @@
               </div>
             </div>
           </div>
-          <button class="w-full mt-6 text-sm text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 py-3 rounded-full transition-colors font-bold shadow-sm">View Portfolio</button>
         </section>
 
         <!-- Recent Donations Ledger (DataTable) -->
@@ -178,6 +177,42 @@
       </div>
     </div>
   </Dialog>
+
+  <!-- All Badges Modal -->
+  <Dialog v-model:visible="isBadgesModalVisible" modal header="All Badges" :style="{ width: '56rem', maxWidth: '95vw' }" :dismissableMask="true">
+    <div v-if="loadingAllBadges" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 py-4">
+      <div v-for="n in 8" :key="'skel-all-badge-'+n" class="flex flex-col items-center text-center gap-3">
+        <Skeleton shape="circle" size="4.5rem" />
+        <Skeleton width="5rem" height="0.6rem" />
+        <Skeleton width="8rem" height="0.5rem" />
+      </div>
+    </div>
+    <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 py-4">
+      <div
+        v-for="badge in allBadges"
+        :key="badge.id"
+        class="flex flex-col items-center text-center gap-2"
+      >
+        <div :class="['w-18 h-18 rounded-full flex items-center justify-center p-1', isEarned(badge.id) ? 'bg-emerald-50 shadow-sm' : 'bg-gray-50 border-2 border-dashed border-gray-200']">
+          <img
+            v-if="badge.icon_url"
+            :src="badge.icon_url"
+            :alt="badge.name"
+            :class="['w-12 h-12 object-contain drop-shadow-sm transition-all', !isEarned(badge.id) ? 'grayscale opacity-50' : '']"
+          />
+          <i v-else :class="['pi pi-star text-2xl', isEarned(badge.id) ? 'text-[#006C49]' : 'text-gray-300']"></i>
+        </div>
+        <span :class="['text-xs font-semibold leading-tight', isEarned(badge.id) ? 'text-gray-800' : 'text-gray-400']">{{ badge.name }}</span>
+        <span class="text-[10px] text-gray-400 leading-tight px-1">{{ getBadgeDescription(badge) }}</span>
+        <span v-if="isEarned(badge.id)" class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold uppercase tracking-wide">
+          <i class="pi pi-check-circle text-[9px]"></i> Earned
+        </span>
+        <span v-else class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full text-[10px] font-bold uppercase tracking-wide">
+          <i class="pi pi-lock text-[9px]"></i> Locked
+        </span>
+      </div>
+    </div>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -214,10 +249,49 @@ const openBadgeDetails = (badge: any) => {
   showBadgeDialog.value = true;
 };
 
+// All Badges modal
+const isBadgesModalVisible = ref(false);
+const allBadges = ref<any[]>([]);
+const loadingAllBadges = ref(false);
+
+// Set of badge IDs that the current user has earned (populated from fetchStats)
+const earnedBadgeIds = computed<Set<string>>(() => {
+  return new Set(badges.value.filter((b: any) => b.active).map((b: any) => b.id));
+});
+
+const isEarned = (badgeId: string) => earnedBadgeIds.value.has(badgeId);
+
+const fetchAllBadges = async () => {
+  if (allBadges.value.length > 0) return; // cached
+  loadingAllBadges.value = true;
+  try {
+    const { data } = await api.get('/badges');
+    // Normalise camelCase Drizzle response to snake_case for consistent template bindings
+    allBadges.value = data.map((b: any) => ({
+      id: b.id,
+      name: b.name,
+      icon_url: b.icon_url ?? b.iconUrl,
+      criteria_type: b.criteria_type ?? b.criteriaType,
+      criteria_value: b.criteria_value ?? b.criteriaValue,
+    }));
+  } catch (err) {
+    console.error('Failed to load all badges', err);
+  } finally {
+    loadingAllBadges.value = false;
+  }
+};
+
+const openAllBadges = () => {
+  isBadgesModalVisible.value = true;
+  fetchAllBadges();
+};
+
 const getBadgeDescription = (badge: any) => {
   if (!badge) return '';
-  const val = Number(badge.criteria_value);
-  switch(badge.criteria_type) {
+  // Support both snake_case (dashboard-stats) and camelCase (GET /badges)
+  const val = Number(badge.criteria_value ?? badge.criteriaValue);
+  const type = badge.criteria_type ?? badge.criteriaType;
+  switch(type) {
     case 'donations_count': return `Make ${val} successful donations.`;
     case 'total_amount': return `Donate a cumulative total of $${val.toLocaleString()}.`;
     case 'unique_campaigns': return `Support ${val} distinct campaigns.`;
